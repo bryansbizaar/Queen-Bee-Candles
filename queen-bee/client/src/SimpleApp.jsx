@@ -1,23 +1,7 @@
-// import Logo from "./components/Logo";
-// import Header from "./components/Header";
-// import CardList from "./components/CardList";
-
-// const App = () => {
-//   return (
-//     <>
-//       <Header />
-//       <Logo />
-//       <CardList />
-//     </>
-//   );
-// };
-
-// export default App;
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
-import Header from "./components/SimpleHeader"; // Use the new header
-import CardList from "./components/CardList";
+import Header from "./components/Header"; // Your existing header
+import CardList from "./components/CardList"; // Your existing card list
 import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
 
