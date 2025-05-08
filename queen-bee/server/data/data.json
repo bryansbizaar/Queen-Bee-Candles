@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Dragon",
+    "image": "dragon.jpg",
+    "price": 1500,
+    "description": "150g 11.5H x 8W"
+  },
+  {
+    "id": 2,
+    "title": "Corn Cob",
+    "image": "corn-cob.jpg",
+    "price": 1600,
+    "description": "160g 15.5H x 4.5W"
+  },
+  {
+    "id": 3,
+    "title": "Bee and Flower",
+    "image": "bee-and-flower.jpg",
+    "price": 850,
+    "description": "45g 3H X 6.5W"
+  },
+  {
+    "id": 4,
+    "title": "Rose",
+    "image": "rose.jpg",
+    "price": 800,
+    "description": "40g 3H X 6.5W"
+  }
+]

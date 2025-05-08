@@ -1,0 +1,52 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import productsRouter from "./routes/product.routes.js";
+
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 8080; // Changed to use port 8080
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
+// Routes
+app.use("/api/products", productsRouter);
+
+// Basic route for testing
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to Queen Bee Candles API" });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
+});
+
+// Added error handling for the server
+const server = app
+  .listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  })
+  .on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.error(`Port ${port} is already in use. Trying port ${port + 1}`);
+      server.listen(port + 1);
+    } else {
+      console.error("Server error:", err);
+    }
+  });
+
+// Handle graceful shutdown
+process.on("SIGTERM", () => {
+  console.info("SIGTERM signal received.");
+  server.close(() => {
+    console.log("Server closed.");
+    process.exit(0);
+  });
+});
