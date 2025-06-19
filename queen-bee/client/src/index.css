@@ -1,0 +1,151 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: black;
+}
+
+.card {
+  border: 1px solid hsl(0, 0%, 80%);
+  border-radius: 0.5rem;
+  box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.1);
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
+  max-width: 250px;
+  display: inline-block;
+}
+
+.card-img {
+  max-width: 75%;
+  border-radius: 0.5rem;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  color: hsl(0, 0%, 20%);
+}
+
+.card-title,
+.card-text {
+  font-family: Roboto, sans-serif;
+  margin: 0;
+}
+
+/* Base header styles - Mobile First */
+.header {
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem;
+}
+
+/* Top section with logo and title */
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Styles for the cart icon in the header */
+
+/* Mobile cart styling */
+.mobile-cart {
+  display: none; /* Hidden by default on desktop */
+}
+
+/* Desktop cart styling in nav */
+.cart-nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.cart-nav-item .cart-icon-wrapper {
+  margin-left: 10px;
+}
+
+/* Media query for mobile */
+@media (max-width: 768px) {
+  .mobile-cart {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+
+  /* Hide cart in nav on mobile if showing in header */
+  .main-nav .cart-nav-item {
+    display: none;
+  }
+}
+
+/* Adjust positioning and appearance to match your site */
+.cart-icon {
+  color: #7a5800;
+}
+
+.cart-icon svg {
+  stroke: #7a5800;
+  stroke-width: 2px;
+}
+
+/* Logo wrapper with strict dimensions */
+.logo-wrapper {
+  width: 40px; /* Small fixed width on mobile */
+  height: 60px;
+  flex-shrink: 0; /* Prevent shrinking */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Crop the logo if needed */
+  margin-right: 0.5rem;
+}
+
+/* Logo image itself */
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Maintain aspect ratio */
+  object-position: center; /* Center the logo in its container */
+}
+
+/* Cart Icon */
+.cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  color: #7a5800;
+  text-decoration: none;
+}
+
+.cart-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #f57f17;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
