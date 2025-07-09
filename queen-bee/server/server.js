@@ -57,6 +57,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import productsRouter from "./routes/product.routes.js";
+import stripeRouter from "./routes/stripe.routes.js";
 
 dotenv.config();
 
@@ -65,7 +66,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = parseInt(process.env.PORT) || 8080;
 
 // Middleware
 app.use(cors());
@@ -77,6 +78,7 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 // Routes
 app.use("/api/products", productsRouter);
+app.use("/api/stripe", stripeRouter);
 
 // Basic route for testing
 app.get("/", (req, res) => {

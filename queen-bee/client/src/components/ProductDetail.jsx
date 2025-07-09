@@ -42,8 +42,6 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     if (product) {
       addToCart(product, quantity);
-      // Optional: Show confirmation or notification
-      alert(`Added ${quantity} ${product.title} to cart!`);
     }
   };
 
