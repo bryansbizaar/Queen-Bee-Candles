@@ -31,7 +31,7 @@ const Header = () => {
           </div>
 
           <button
-            className="menu-toggle"
+            className={`menu-toggle ${menuOpen ? "active" : ""}`}
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -39,28 +39,30 @@ const Header = () => {
           </button>
         </div>
 
-        <nav className={`main-nav ${menuOpen ? "is-open" : ""}`}>
-          <ul>
-            <li>
-              <Link to="/" onClick={() => setMenuOpen(false)}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" onClick={() => setMenuOpen(false)}>
-                About
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" onClick={() => setMenuOpen(false)}>
-                Contact
-              </Link>
-            </li>
-            <li className="cart-nav-item">
-              <CartIcon />
-            </li>
-          </ul>
-        </nav>
+        <div className="nav-container">
+          <nav className={`main-nav ${menuOpen ? "is-open" : ""}`}>
+            <ul>
+              <li>
+                <Link to="/" onClick={() => setMenuOpen(false)}>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" onClick={() => setMenuOpen(false)}>
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" onClick={() => setMenuOpen(false)}>
+                  Contact
+                </Link>
+              </li>
+              <li className="cart-nav-item">
+                <CartIcon />
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </header>
   );
