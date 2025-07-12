@@ -19,7 +19,7 @@ const CardList = () => {
 
         const data = await response.json();
         console.log("Products fetched:", data); // For debugging
-        setProducts(data);
+        setProducts(data.data?.products || data);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err.message);
