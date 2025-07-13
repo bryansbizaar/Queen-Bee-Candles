@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Create context
@@ -6,7 +6,25 @@ const CartContext = createContext();
 
 // Provider component
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  // Initialize cart from localStorage or empty array
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem("queenBeeCart");
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error("Error loading cart from localStorage:", error);
+      return [];
+    }
+  });
+
+  // Save cart to localStorage whenever cartItems changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("queenBeeCart", JSON.stringify(cartItems));
+    } catch (error) {
+      console.error("Error saving cart to localStorage:", error);
+    }
+  }, [cartItems]);
 
   // Add to cart
   const addToCart = (product, quantity = 1) => {
@@ -64,6 +82,12 @@ export const CartProvider = ({ children }) => {
   // Clear cart
   const clearCart = () => {
     setCartItems([]);
+    // Also clear from localStorage
+    try {
+      localStorage.removeItem("queenBeeCart");
+    } catch (error) {
+      console.error("Error clearing cart from localStorage:", error);
+    }
   };
 
   // Context value
