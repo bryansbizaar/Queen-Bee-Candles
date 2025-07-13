@@ -19,7 +19,10 @@ const CardList = () => {
 
         const data = await response.json();
         console.log("Products fetched:", data); // For debugging
-        setProducts(data.data?.products || data);
+
+        // Extract products from the data property
+        const productsArray = data.data || data; // Handle both new and old API response format
+        setProducts(productsArray);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err.message);

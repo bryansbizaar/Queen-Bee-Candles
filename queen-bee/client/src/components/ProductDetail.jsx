@@ -22,7 +22,10 @@ const ProductDetail = () => {
           throw new Error("Product not found");
         }
         const data = await response.json();
-        setProduct(data);
+
+        // Extract product from the data property
+        const productData = data.data || data; // Handle both new and old API response format
+        setProduct(productData);
       } catch (err) {
         setError(err.message);
       } finally {
