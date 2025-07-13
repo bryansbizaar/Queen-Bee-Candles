@@ -57,23 +57,26 @@ const Cart = () => {
         const newOrderId = generateOrderId();
         const total = getCartTotal();
 
-        const response = await fetch("http://localhost:8080/api/stripe/create-payment-intent", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: total,
-            orderId: newOrderId,
-            customerEmail: customerEmail,
-            cartItems: cartItems.map(item => ({
-              id: item.id,
-              title: item.title,
-              price: item.price,
-              quantity: item.quantity
-            }))
-          }),
-        });
+        const response = await fetch(
+          "http://localhost:8080/api/stripe/create-payment-intent",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              amount: total,
+              orderId: newOrderId,
+              customerEmail: customerEmail,
+              cartItems: cartItems.map((item) => ({
+                id: item.id,
+                title: item.title,
+                price: item.price,
+                quantity: item.quantity,
+              })),
+            }),
+          }
+        );
 
         const data = await response.json();
 
@@ -81,17 +84,19 @@ const Cart = () => {
           throw new Error(data.error || "Failed to create payment intent");
         }
 
-        setClientSecret(data.clientSecret);
-        setOrderId(newOrderId);
-        setStep("payment");
+        // Handle the consistent wrapped response structure
+        if (data.success && data.data && data.data.clientSecret) {
+          setClientSecret(data.data.clientSecret);
+          setOrderId(newOrderId);
+          setStep("payment");
+        } else {
+          throw new Error("Invalid response: missing clientSecret");
+        }
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
-    } else {
-      // Handle Account2Account payment (placeholder for future implementation)
-      // This option is currently disabled in the UI
     }
   };
 
@@ -137,12 +142,12 @@ const Cart = () => {
             marginBottom: "1rem",
             display: "flex",
             alignItems: "center",
-            gap: "0.5rem"
+            gap: "0.5rem",
           }}
         >
           ← Back to Cart Review
         </button>
-        <Elements stripe={stripePromise} options={{ locale: 'en' }}>
+        <Elements stripe={stripePromise} options={{ locale: "en" }}>
           <StripeCheckout
             clientSecret={clientSecret}
             orderId={orderId}
@@ -293,13 +298,15 @@ const Cart = () => {
         </div>
 
         {/* Customer Email Input */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+        >
           <label
             htmlFor="customerEmail"
             style={{
               fontWeight: "bold",
               color: "#374151",
-              fontSize: "0.95rem"
+              fontSize: "0.95rem",
             }}
           >
             Email Address *
@@ -316,7 +323,7 @@ const Cart = () => {
               borderRadius: "0.25rem",
               fontSize: "1rem",
               outline: "none",
-              backgroundColor: "white"
+              backgroundColor: "white",
             }}
             onFocus={() => setEmailError("")}
           />
@@ -328,17 +335,21 @@ const Cart = () => {
         </div>
 
         {/* Payment Method Selection */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+        >
           <label
             style={{
               fontWeight: "bold",
               color: "#374151",
-              fontSize: "0.95rem"
+              fontSize: "0.95rem",
             }}
           >
             Payment Method *
           </label>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          >
             <label
               style={{
                 display: "flex",
@@ -348,7 +359,8 @@ const Cart = () => {
                 padding: "0.5rem",
                 border: "1px solid #d1d5db",
                 borderRadius: "0.25rem",
-                backgroundColor: paymentMethod === "stripe" ? "#eff6ff" : "white"
+                backgroundColor:
+                  paymentMethod === "stripe" ? "#eff6ff" : "white",
               }}
             >
               <input
@@ -370,8 +382,9 @@ const Cart = () => {
                 padding: "0.5rem",
                 border: "1px solid #d1d5db",
                 borderRadius: "0.25rem",
-                backgroundColor: paymentMethod === "account2account" ? "#eff6ff" : "white",
-                opacity: 0.6
+                backgroundColor:
+                  paymentMethod === "account2account" ? "#eff6ff" : "white",
+                opacity: 0.6,
               }}
             >
               <input
@@ -396,14 +409,16 @@ const Cart = () => {
               padding: "0.75rem",
               borderRadius: "0.25rem",
               border: "1px solid #fecaca",
-              fontSize: "0.9rem"
+              fontSize: "0.9rem",
             }}
           >
             {error}
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
+        <div
+          style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}
+        >
           <Link
             to="/"
             style={{
@@ -412,22 +427,28 @@ const Cart = () => {
               padding: "0.75rem 1.5rem",
               border: "1px solid #d1d5db",
               borderRadius: "0.25rem",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             Continue Shopping
           </Link>
-          
+
           <button
             onClick={handleProceedToPayment}
             disabled={loading || !customerEmail || !paymentMethod}
             style={{
-              backgroundColor: loading || !customerEmail || !paymentMethod ? "#9ca3af" : "#4f46e5",
+              backgroundColor:
+                loading || !customerEmail || !paymentMethod
+                  ? "#9ca3af"
+                  : "#4f46e5",
               color: "white",
               border: "none",
               padding: "0.75rem 1.5rem",
               borderRadius: "0.25rem",
-              cursor: loading || !customerEmail || !paymentMethod ? "not-allowed" : "pointer",
+              cursor:
+                loading || !customerEmail || !paymentMethod
+                  ? "not-allowed"
+                  : "pointer",
               fontWeight: "bold",
             }}
           >

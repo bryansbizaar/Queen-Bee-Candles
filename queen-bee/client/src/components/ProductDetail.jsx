@@ -14,7 +14,6 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // Replace with your actual API endpoint
         const response = await fetch(
           `http://localhost:8080/api/products/${id}`
         );
@@ -23,9 +22,13 @@ const ProductDetail = () => {
         }
         const data = await response.json();
 
-        // Extract product from the data property
-        const productData = data.data || data; // Handle both new and old API response format
-        setProduct(productData);
+        // Handle the new nested response structure
+        if (data.success && data.data && data.data.product) {
+          setProduct(data.data.product);
+        } else {
+          // Fallback for simple response structure
+          setProduct(data);
+        }
       } catch (err) {
         setError(err.message);
       } finally {

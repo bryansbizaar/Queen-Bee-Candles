@@ -1,16 +1,15 @@
-// client/src/components/StripeCheckout.jsx
 import { useState } from "react";
-import PropTypes from "prop-types";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
+import PropTypes from "prop-types";
 
 const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const { cartItems, clearCart } = useCart();
+  const { clearCart } = useCart();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
 
@@ -27,10 +26,6 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
     const cardElement = elements.getElement(CardElement);
 
     try {
-      // Save cart items to sessionStorage BEFORE processing payment
-      // This ensures the PaymentSuccess component can access them to create the order
-      sessionStorage.setItem("cartItems", JSON.stringify(cartItems));
-
       const { error: confirmError, paymentIntent } =
         await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
@@ -39,6 +34,7 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
               email: customerEmail,
               address: {
                 country: "NZ",
+                // Don't include postal_code field to avoid validation issues
               },
             },
           },
@@ -65,7 +61,7 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
           })
         );
 
-        // Clear cart from context (but keep in sessionStorage for order creation)
+        // Clear cart
         clearCart();
 
         // Navigate to success page
@@ -75,7 +71,7 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
-      console.error("Payment processing error:", err);
+      console.error("Payment error:", err);
     } finally {
       setProcessing(false);
     }
@@ -89,116 +85,97 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
         "::placeholder": {
           color: "#aab7c4",
         },
+        fontFamily: "system-ui, -apple-system, sans-serif",
       },
       invalid: {
         color: "#9e2146",
       },
     },
+    hidePostalCode: true, // Hide postal code field
+    disableLink: true, // Disable Stripe Link to avoid address collection
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h3
-        style={{
-          marginBottom: "1.5rem",
-          textAlign: "center",
-          color: "#374151",
-        }}
-      >
+    <div style={{ maxWidth: "500px", margin: "0 auto", padding: "2rem" }}>
+      <h2 style={{ marginBottom: "1.5rem", textAlign: "center" }}>
         Complete Your Payment
-      </h3>
+      </h2>
 
-      {/* Order Summary */}
       <div
         style={{
-          backgroundColor: "#f9fafb",
-          border: "1px solid #e5e7eb",
-          borderRadius: "0.5rem",
+          backgroundColor: "#f8f9fa",
           padding: "1rem",
-          marginBottom: "1.5rem",
+          borderRadius: "0.5rem",
+          marginBottom: "2rem",
         }}
       >
-        <div
+        <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.1rem" }}>
+          Order Summary
+        </h3>
+        <p style={{ margin: "0.25rem 0", color: "#6b7280" }}>
+          Order ID: <strong>{orderId}</strong>
+        </p>
+        <p style={{ margin: "0.25rem 0", color: "#6b7280" }}>
+          Email: <strong>{customerEmail}</strong>
+        </p>
+        <p
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <span style={{ color: "#6b7280" }}>Order ID:</span>
-          <span style={{ fontWeight: "bold", fontSize: "0.9rem" }}>
-            {orderId}
-          </span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <span style={{ color: "#6b7280" }}>Customer:</span>
-          <span style={{ fontSize: "0.9rem" }}>{customerEmail}</span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <span style={{ color: "#6b7280" }}>Items:</span>
-          <span>{cartItems.length} item(s)</span>
-        </div>
-        <hr
-          style={{
-            margin: "0.75rem 0",
-            border: "none",
-            borderTop: "1px solid #e5e7eb",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
+            margin: "0.25rem 0",
+            fontSize: "1.2rem",
             fontWeight: "bold",
           }}
         >
-          <span>Total:</span>
-          <span style={{ color: "#059669", fontSize: "1.1rem" }}>
-            {formatAmount(amount)} NZD
-          </span>
-        </div>
+          Total: {formatAmount(amount)} NZD
+        </p>
       </div>
 
-      {error && (
-        <div
-          style={{
-            backgroundColor: "#fee2e2",
-            border: "1px solid #fecaca",
-            color: "#dc2626",
-            padding: "0.75rem",
-            borderRadius: "0.375rem",
-            fontSize: "0.875rem",
-            marginBottom: "1rem",
-          }}
-        >
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit}>
-        <div
-          style={{
-            backgroundColor: "white",
-            border: "1px solid #d1d5db",
-            borderRadius: "0.375rem",
-            padding: "0.75rem",
-            marginBottom: "1rem",
-          }}
-        >
-          <CardElement options={cardElementOptions} />
+        <div style={{ marginBottom: "1.5rem" }}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "0.5rem",
+              fontWeight: "bold",
+              color: "#374151",
+            }}
+          >
+            Card Details
+          </label>
+          <div
+            style={{
+              padding: "1rem",
+              border: "1px solid #d1d5db",
+              borderRadius: "0.375rem",
+              backgroundColor: "white",
+            }}
+          >
+            <CardElement options={cardElementOptions} />
+          </div>
+          <p
+            style={{
+              fontSize: "0.875rem",
+              color: "#6b7280",
+              marginTop: "0.5rem",
+            }}
+          >
+            💡 Use test card: 4242 4242 4242 4242, any future date, any CVC
+          </p>
         </div>
+
+        {error && (
+          <div
+            style={{
+              color: "#dc2626",
+              backgroundColor: "#fef2f2",
+              padding: "0.75rem",
+              borderRadius: "0.375rem",
+              marginBottom: "1rem",
+              border: "1px solid #fecaca",
+            }}
+          >
+            {error}
+          </div>
+        )}
 
         <button
           type="submit"
@@ -234,7 +211,6 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
     </div>
   );
 };
-
 // PropTypes validation
 StripeCheckout.propTypes = {
   clientSecret: PropTypes.string.isRequired,
