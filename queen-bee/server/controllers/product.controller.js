@@ -690,3 +690,243 @@ export const healthCheck = asyncHandler(async (req, res) => {
     res.status(503).json(response);
   }
 });
+// GET /api/products/:id/stock - Check stock availability for a specific quantity
+export const checkStock = asyncHandler(async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id);
+    const requestedQuantity = parseInt(req.query.quantity) || 1;
+
+    if (requestedQuantity < 1) {
+      return res.status(400).json({
+        success: false,
+        error: "Quantity must be at least 1",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    const product = await ProductService.getProductById(productId);
+
+    if (!product) {
+      throw new NotFoundError("Product");
+    }
+
+    const currentStock = product.stock_quantity || 0;
+    const available = currentStock >= requestedQuantity;
+
+    const response = {
+      success: true,
+      data: {
+        productId,
+        productTitle: product.title,
+        requestedQuantity,
+        currentStock,
+        available,
+        maxAvailable: currentStock,
+        stockStatus:
+          currentStock === 0
+            ? "out_of_stock"
+            : currentStock <= 5
+            ? "low_stock"
+            : "in_stock",
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    throw new InternalServerError("Failed to check stock");
+  }
+});
+
+// PATCH /api/products/:id/stock - Update stock quantity (admin function)
+export const updateStock = asyncHandler(async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id);
+    const { quantity, reason = "manual_adjustment" } = req.body;
+
+    // Validation
+    if (quantity === undefined || quantity === null) {
+      return res.status(400).json({
+        success: false,
+        error: "Quantity is required",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    const newQuantity = parseInt(quantity);
+    if (isNaN(newQuantity) || newQuantity < 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Quantity must be a non-negative number",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Check if product exists
+    const product = await ProductService.getProductById(productId);
+    if (!product) {
+      throw new NotFoundError("Product");
+    }
+
+    const oldQuantity = product.stock_quantity || 0;
+
+    // Update stock
+    const updatedProduct = await ProductService.updateStock(
+      productId,
+      newQuantity,
+      reason
+    );
+
+    const response = {
+      success: true,
+      data: {
+        product: updatedProduct,
+        stockChange: {
+          oldQuantity,
+          newQuantity,
+          difference: newQuantity - oldQuantity,
+          reason,
+          updatedAt: new Date().toISOString(),
+        },
+      },
+      message: `Stock updated successfully for ${product.title}`,
+      timestamp: new Date().toISOString(),
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    throw new InternalServerError("Failed to update stock");
+  }
+});
+
+// GET /api/products/admin/low-stock - Get products with low stock (admin function)
+export const getLowStockProducts = asyncHandler(async (req, res) => {
+  try {
+    const threshold = parseInt(req.query.threshold) || 5;
+
+    if (threshold < 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Threshold must be non-negative",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    const allProducts = await ProductService.getAllProducts();
+
+    const lowStockProducts = allProducts
+      .filter((product) => (product.stock_quantity || 0) <= threshold)
+      .map((product) => ({
+        id: product.id,
+        title: product.title,
+        category: product.category,
+        price: product.price,
+        stock_quantity: product.stock_quantity || 0,
+        stockStatus:
+          product.stock_quantity === 0 ? "out_of_stock" : "low_stock",
+        estimatedValue: product.price * (product.stock_quantity || 0),
+      }))
+      .sort((a, b) => a.stock_quantity - b.stock_quantity); // Sort by lowest stock first
+
+    const summary = {
+      totalLowStockProducts: lowStockProducts.length,
+      outOfStockCount: lowStockProducts.filter((p) => p.stock_quantity === 0)
+        .length,
+      lowStockCount: lowStockProducts.filter(
+        (p) => p.stock_quantity > 0 && p.stock_quantity <= threshold
+      ).length,
+      totalValue: lowStockProducts.reduce(
+        (sum, p) => sum + p.estimatedValue,
+        0
+      ),
+      threshold,
+    };
+
+    const response = {
+      success: true,
+      data: {
+        products: lowStockProducts,
+        summary,
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    throw new InternalServerError("Failed to retrieve low stock products");
+  }
+});
+
+// POST /api/products/:id/stock/adjust - Adjust stock with reason tracking
+export const adjustStock = asyncHandler(async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id);
+    const { adjustment, reason = "manual_adjustment", notes } = req.body;
+
+    // Validation
+    if (adjustment === undefined || adjustment === null) {
+      return res.status(400).json({
+        success: false,
+        error: "Adjustment amount is required",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    const adjustmentAmount = parseInt(adjustment);
+    if (isNaN(adjustmentAmount)) {
+      return res.status(400).json({
+        success: false,
+        error: "Adjustment must be a number",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Check if product exists
+    const product = await ProductService.getProductById(productId);
+    if (!product) {
+      throw new NotFoundError("Product");
+    }
+
+    const currentStock = product.stock_quantity || 0;
+    const newQuantity = Math.max(0, currentStock + adjustmentAmount); // Prevent negative stock
+
+    // Update stock
+    const updatedProduct = await ProductService.updateStock(
+      productId,
+      newQuantity,
+      reason
+    );
+
+    const response = {
+      success: true,
+      data: {
+        product: updatedProduct,
+        adjustment: {
+          previousQuantity: currentStock,
+          adjustmentAmount,
+          newQuantity,
+          reason,
+          notes: notes || null,
+          adjustedAt: new Date().toISOString(),
+        },
+      },
+      message: `Stock ${
+        adjustmentAmount > 0 ? "increased" : "decreased"
+      } by ${Math.abs(adjustmentAmount)} for ${product.title}`,
+      timestamp: new Date().toISOString(),
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    throw new InternalServerError("Failed to adjust stock");
+  }
+});
