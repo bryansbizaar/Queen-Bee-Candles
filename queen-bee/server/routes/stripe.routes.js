@@ -10,6 +10,7 @@ import {
   BadRequestError,
   InternalServerError,
 } from "../middleware/errors/CustomErrors.js";
+import OrderService from "../services/OrderService.js";
 
 dotenv.config();
 
@@ -32,6 +33,63 @@ const paymentIntentIdValidation = (req) => {
   }
 
   return null;
+};
+
+// Simple validation function for order creation
+const validateOrderCreation = (req, res, next) => {
+  const { paymentIntentId, customerEmail, cartItems } = req.body;
+
+  // Validate paymentIntentId
+  if (
+    !paymentIntentId ||
+    typeof paymentIntentId !== "string" ||
+    !paymentIntentId.startsWith("pi_")
+  ) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid payment intent ID format",
+    });
+  }
+
+  // Validate customerEmail
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!customerEmail || !emailRegex.test(customerEmail)) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid email format",
+    });
+  }
+
+  // Validate cartItems
+  if (!Array.isArray(cartItems) || cartItems.length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: "Cart items must be a non-empty array",
+    });
+  }
+
+  for (const item of cartItems) {
+    if (!item.id || !item.quantity || !item.price || !item.title) {
+      return res.status(400).json({
+        success: false,
+        error: "Each cart item must have id, quantity, price, and title",
+      });
+    }
+    if (typeof item.quantity !== "number" || item.quantity <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Item quantity must be a positive number",
+      });
+    }
+    if (typeof item.price !== "number" || item.price <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Item price must be a positive number",
+      });
+    }
+  }
+
+  next();
 };
 
 // POST /api/stripe/create-payment-intent
@@ -66,42 +124,135 @@ router.post(
         description: `Queen Bee Candles Order ${orderId}`,
         receipt_email: customerEmail,
         statement_descriptor: "Queen Bee Candles",
-        // Add shipping information if available
-        ...(req.body.shipping && {
-          shipping: {
-            name: req.body.shipping.name,
-            address: {
-              line1: req.body.shipping.address.line1,
-              line2: req.body.shipping.address.line2,
-              city: req.body.shipping.address.city,
-              postal_code: req.body.shipping.address.postal_code,
-              country: req.body.shipping.address.country || "NZ",
-            },
-          },
-        }),
       });
 
-      const response = {
+      res.json({
         success: true,
         data: {
           clientSecret: paymentIntent.client_secret,
           paymentIntentId: paymentIntent.id,
-          amount: paymentIntent.amount,
-          currency: paymentIntent.currency,
-          status: paymentIntent.status,
         },
-        timestamp: new Date().toISOString(),
-      };
-
-      res.status(201).json(response);
+      });
     } catch (error) {
-      console.error("Stripe payment intent creation error:", error);
+      console.error("Error creating payment intent:", error);
+      throw new InternalServerError("Failed to create payment intent");
+    }
+  })
+);
 
-      if (error.type === "StripeInvalidRequestError") {
-        throw new BadRequestError(`Payment setup failed: ${error.message}`);
+// POST /api/stripe/create-order
+router.post(
+  "/create-order",
+  rateLimit(
+    "order",
+    "Too many order creation attempts. Please try again later."
+  ),
+  validateOrderCreation,
+  asyncHandler(async (req, res) => {
+    try {
+      const {
+        paymentIntentId,
+        customerEmail,
+        cartItems,
+        customerName,
+        shippingAddress,
+      } = req.body;
+
+      console.log(
+        "🔍 DEBUG: Received cartItems in create-order:",
+        JSON.stringify(cartItems, null, 2)
+      );
+
+      // 1. Verify the payment intent was successful
+      const paymentIntent = await stripe.paymentIntents.retrieve(
+        paymentIntentId
+      );
+
+      if (paymentIntent.status !== "succeeded") {
+        throw new BadRequestError(
+          "Payment has not been completed successfully"
+        );
       }
 
-      throw new InternalServerError("Failed to create payment intent");
+      // 2. Check if order already exists for this payment intent
+      const existingOrder = await OrderService.getOrderByPaymentIntent(
+        paymentIntentId
+      );
+      if (existingOrder) {
+        return res.json({
+          success: true,
+          message: "Order already exists",
+          data: {
+            orderId: existingOrder.id,
+            status: existingOrder.status,
+            totalAmount: existingOrder.total_amount,
+          },
+        });
+      }
+
+      // 3. Validate that cart items match payment intent metadata
+      const metadataCartItems = JSON.parse(
+        paymentIntent.metadata.cartItems || "[]"
+      );
+      if (metadataCartItems.length !== cartItems.length) {
+        throw new BadRequestError("Cart items do not match payment intent");
+      }
+
+      // 4. Convert cart items to order items format
+      const orderItems = cartItems.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price, // Price in cents, already stored correctly
+        title: item.title,
+      }));
+
+      // 5. Prepare order data
+      const orderData = {
+        customerEmail,
+        customerName: customerName || null,
+        customerPhone: null, // Could be added later if needed
+        shippingAddress: shippingAddress || {
+          line1: "Address to be provided",
+          city: "Whangarei",
+          state: "Northland",
+          postal_code: "",
+          country: "NZ",
+        },
+        billingAddress: null, // Use shipping address as billing for now
+        items: orderItems,
+        paymentIntentId,
+        totalAmount: paymentIntent.amount, // Amount in cents
+        status: "paid", // Payment succeeded, so order is paid
+      };
+
+      // 6. Create the order
+      const order = await OrderService.createOrder(orderData);
+
+      res.json({
+        success: true,
+        message: "Order created successfully",
+        data: {
+          orderId: order.id,
+          status: order.status,
+          totalAmount: order.total_amount,
+          customerEmail: order.customer_email,
+          itemCount: order.items.length,
+          createdAt: order.created_at,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating order:", error);
+
+      if (error instanceof BadRequestError) {
+        throw error;
+      }
+
+      // Check for specific database errors
+      if (error.message && error.message.includes("Insufficient stock")) {
+        throw new BadRequestError(error.message);
+      }
+
+      throw new InternalServerError("Failed to create order");
     }
   })
 );
@@ -109,20 +260,20 @@ router.post(
 // GET /api/stripe/payment-intent/:paymentIntentId
 router.get(
   "/payment-intent/:paymentIntentId",
-  rateLimit("api"),
-  validateRequest([paymentIntentIdValidation]),
+  rateLimit("retrieve", "Too many retrieval attempts. Please try again later."),
   asyncHandler(async (req, res) => {
+    const validationError = paymentIntentIdValidation(req);
+    if (validationError) {
+      throw new BadRequestError(validationError);
+    }
+
     try {
       const { paymentIntentId } = req.params;
-
       const paymentIntent = await stripe.paymentIntents.retrieve(
-        paymentIntentId,
-        {
-          expand: ["charges"],
-        }
+        paymentIntentId
       );
 
-      const response = {
+      res.json({
         success: true,
         data: {
           id: paymentIntent.id,
@@ -131,103 +282,45 @@ router.get(
           currency: paymentIntent.currency,
           created: paymentIntent.created,
           metadata: paymentIntent.metadata,
-          lastPaymentError: paymentIntent.last_payment_error
-            ? {
-                type: paymentIntent.last_payment_error.type,
-                code: paymentIntent.last_payment_error.code,
-                message: paymentIntent.last_payment_error.message,
-              }
-            : null,
-          charges: paymentIntent.charges.data.map((charge) => ({
-            id: charge.id,
-            status: charge.status,
-            amount: charge.amount,
-            created: charge.created,
-            receipt_url: charge.receipt_url,
-          })),
         },
-        timestamp: new Date().toISOString(),
-      };
-
-      res.status(200).json(response);
+      });
     } catch (error) {
-      console.error("Stripe payment intent retrieval error:", error);
-
-      if (error.type === "StripeInvalidRequestError") {
-        throw new BadRequestError(`Payment intent not found: ${error.message}`);
-      }
-
+      console.error("Error retrieving payment intent:", error);
       throw new InternalServerError("Failed to retrieve payment intent");
     }
   })
 );
 
-// POST /api/stripe/webhook - Handle Stripe webhooks
-router.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
+// GET /api/stripe/order/:paymentIntentId
+router.get(
+  "/order/:paymentIntentId",
+  rateLimit("retrieve", "Too many retrieval attempts. Please try again later."),
   asyncHandler(async (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-    if (!endpointSecret) {
-      console.warn("⚠️ Stripe webhook secret not configured");
-      return res.status(400).send("Webhook secret not configured");
+    const validationError = paymentIntentIdValidation(req);
+    if (validationError) {
+      throw new BadRequestError(validationError);
     }
 
-    let event;
-
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } catch (err) {
-      console.error(`❌ Webhook signature verification failed:`, err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
+      const { paymentIntentId } = req.params;
+      const order = await OrderService.getOrderByPaymentIntent(paymentIntentId);
 
-    // Handle the event
-    try {
-      switch (event.type) {
-        case "payment_intent.succeeded":
-          const paymentIntent = event.data.object;
-          console.log(`✅ Payment succeeded: ${paymentIntent.id}`);
-
-          // Here you would typically:
-          // 1. Update order status in database
-          // 2. Send confirmation email
-          // 3. Update inventory
-          // 4. Log the successful payment
-
-          break;
-
-        case "payment_intent.payment_failed":
-          const failedPayment = event.data.object;
-          console.log(`❌ Payment failed: ${failedPayment.id}`);
-
-          // Handle failed payment:
-          // 1. Log the failure
-          // 2. Notify customer
-          // 3. Update order status
-
-          break;
-
-        case "charge.dispute.created":
-          const dispute = event.data.object;
-          console.log(`⚠️ Dispute created: ${dispute.id}`);
-
-          // Handle dispute:
-          // 1. Alert administrators
-          // 2. Prepare dispute response
-
-          break;
-
-        default:
-          console.log(`🔔 Unhandled event type: ${event.type}`);
+      if (!order) {
+        throw new BadRequestError("No order found for this payment intent");
       }
 
-      res.status(200).json({ received: true });
+      res.json({
+        success: true,
+        data: order,
+      });
     } catch (error) {
-      console.error(`❌ Error handling webhook event:`, error);
-      res.status(500).json({ error: "Webhook handler failed" });
+      console.error("Error retrieving order:", error);
+
+      if (error instanceof BadRequestError) {
+        throw error;
+      }
+
+      throw new InternalServerError("Failed to retrieve order");
     }
   })
 );

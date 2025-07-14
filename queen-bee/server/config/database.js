@@ -51,4 +51,23 @@ export const closePool = () => {
   return pool.end();
 };
 
+pool
+  .connect()
+  .then((client) => {
+    console.log("🔌 Database connection test successful");
+    console.log("Connected to database:", client.database);
+    client.release();
+  })
+  .catch((err) => {
+    console.error("❌ Database connection test failed:");
+    console.error("Error code:", err.code);
+    console.error("Error message:", err.message);
+    console.error("Connection details attempted:", {
+      host: process.env.DATABASE_HOST,
+      port: process.env.DATABASE_PORT,
+      database: process.env.DATABASE_NAME,
+      user: process.env.DATABASE_USER,
+    });
+  });
+
 export default pool;
