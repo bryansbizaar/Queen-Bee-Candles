@@ -1,5 +1,3 @@
-// server/middleware/errorHandler.js
-
 import { AppError } from "./errors/CustomErrors.js";
 
 // Enhanced error logging function

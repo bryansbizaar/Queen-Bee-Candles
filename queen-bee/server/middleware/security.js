@@ -1,5 +1,3 @@
-// server/middleware/security.js
-
 import { TooManyRequestsError } from "./errors/CustomErrors.js";
 
 // Simple in-memory rate limiter (for production, use Redis)

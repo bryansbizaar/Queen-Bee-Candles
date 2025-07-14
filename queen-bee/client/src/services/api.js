@@ -1,5 +1,3 @@
-// client/src/services/api.js
-
 // Custom error classes for the client
 export class APIError extends Error {
   constructor(message, status, code = null, field = null) {

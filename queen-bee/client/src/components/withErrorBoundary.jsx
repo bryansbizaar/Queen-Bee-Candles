@@ -1,5 +1,3 @@
-// client/src/components/withErrorBoundary.jsx
-
 import ErrorBoundary from "./ErrorBoundary";
 
 // Higher-order component for wrapping components with error boundary

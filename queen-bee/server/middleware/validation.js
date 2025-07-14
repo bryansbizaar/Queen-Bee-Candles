@@ -1,5 +1,3 @@
-// server/middleware/validation.js
-
 import { ValidationError, BadRequestError } from "./errors/CustomErrors.js";
 
 // Generic validation middleware factory

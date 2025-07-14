@@ -1,4 +1,3 @@
-// server/controllers/order.controller.js
 import OrderService from "../services/OrderService.js";
 
 class OrderController {
