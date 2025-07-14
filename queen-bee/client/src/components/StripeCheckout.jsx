@@ -168,127 +168,46 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "0 auto" }}>
-      <h3 style={{ marginBottom: "1.5rem", textAlign: "center" }}>
-        Complete Your Payment
-      </h3>
+    <div className="checkout-container">
+      <h3 className="checkout-title">Complete Your Payment</h3>
 
-      <div
-        style={{
-          backgroundColor: "#f8f9fa",
-          padding: "1rem",
-          borderRadius: "0.5rem",
-          marginBottom: "1.5rem",
-          border: "1px solid #e9ecef",
-        }}
-      >
-        <h4 style={{ margin: "0 0 0.5rem 0", fontSize: "1rem" }}>
-          Order Summary
-        </h4>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "0.25rem",
-          }}
-        >
+      <div className="order-summary">
+        <h4 className="order-summary-title">Order Summary</h4>
+        <div className="order-summary-row">
           <span>Order ID:</span>
-          <span style={{ fontWeight: "bold" }}>{orderId}</span>
+          <span className="order-summary-bold">{orderId}</span>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "0.25rem",
-          }}
-        >
+        <div className="order-summary-row">
           <span>Email:</span>
           <span>{customerEmail}</span>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            borderTop: "1px solid #dee2e6",
-            paddingTop: "0.5rem",
-            marginTop: "0.5rem",
-          }}
-        >
-          <span style={{ fontWeight: "bold" }}>Total:</span>
-          <span style={{ fontWeight: "bold" }}>{formatAmount(amount)}</span>
+        <div className="order-summary-total">
+          <span className="order-summary-bold">Total:</span>
+          <span className="order-summary-bold">{formatAmount(amount)}</span>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div
-          style={{
-            border: "1px solid #d1d5db",
-            borderRadius: "0.375rem",
-            padding: "1rem",
-            marginBottom: "1rem",
-            backgroundColor: "#ffffff",
-          }}
-        >
-          <label
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
-              color: "#374151",
-            }}
-          >
-            Card Details
-          </label>
+      <form onSubmit={handleSubmit} className="payment-form">
+        <div className="card-input-container">
+          <label className="card-input-label">Card Details</label>
           <CardElement options={cardElementOptions} />
         </div>
 
-        {error && (
-          <div
-            style={{
-              backgroundColor: "#fef2f2",
-              border: "1px solid #fecaca",
-              borderRadius: "0.375rem",
-              padding: "0.75rem",
-              marginBottom: "1rem",
-              color: "#dc2626",
-            }}
-          >
-            {error}
-          </div>
-        )}
+        {error && <div className="payment-error">{error}</div>}
 
         <button
           type="submit"
           disabled={!stripe || processing}
-          style={{
-            width: "100%",
-            backgroundColor: processing ? "#9ca3af" : "#10b981",
-            color: "white",
-            border: "none",
-            borderRadius: "0.375rem",
-            padding: "0.75rem",
-            fontSize: "1rem",
-            fontWeight: "bold",
-            cursor: processing ? "not-allowed" : "pointer",
-            transition: "background-color 0.2s",
-          }}
+          className={`payment-button ${
+            processing ? "payment-button-processing" : "payment-button-active"
+          }`}
         >
           {processing ? "Processing..." : `Pay ${formatAmount(amount)}`}
         </button>
       </form>
 
-      <div
-        style={{
-          marginTop: "1rem",
-          padding: "0.75rem",
-          backgroundColor: "#f0f9ff",
-          border: "1px solid #bfdbfe",
-          borderRadius: "0.375rem",
-          fontSize: "0.875rem",
-          color: "#1e40af",
-        }}
-      >
-        <p style={{ margin: "0" }}>
+      <div className="payment-security-info">
+        <p className="payment-security-text">
           🔒 Your payment is secured by Stripe. Your card details are never
           stored on our servers.
         </p>
