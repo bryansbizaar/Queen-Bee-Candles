@@ -165,6 +165,7 @@ const StripeCheckout = ({ clientSecret, orderId, customerEmail, amount }) => {
         color: "#9e2146",
       },
     },
+    hidePostalCode: true,
   };
 
   return (
