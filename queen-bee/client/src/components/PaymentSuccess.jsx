@@ -423,32 +423,17 @@ const PaymentSuccess = () => {
 
   if (!paymentData) {
     return (
-      <div
-        style={{
-          textAlign: "center",
-          padding: "3rem",
-          maxWidth: "600px",
-          margin: "0 auto",
-        }}
-      >
-        <h2 style={{ color: "#dc2626", marginBottom: "1rem" }}>
+      <div className="success-container">
+        <h2 className="success-error-title">
           No Payment Information Found
         </h2>
-        <p style={{ color: "#6b7280", marginBottom: "2rem" }}>
+        <p className="success-error-text">
           We couldn&apos;t find your payment information. This page is only
           accessible after a successful payment.
         </p>
         <Link
           to="/"
-          style={{
-            display: "inline-block",
-            backgroundColor: "#4f46e5",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "0.375rem",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
+          className="action-button action-button-primary"
         >
           Continue Shopping
         </Link>
@@ -461,132 +446,78 @@ const PaymentSuccess = () => {
     paymentData.orderStatus === "payment_succeeded_order_pending";
 
   return (
-    <div
-      style={{
-        textAlign: "center",
-        padding: "3rem",
-        maxWidth: "600px",
-        margin: "0 auto",
-      }}
-    >
-      <div
-        style={{
-          fontSize: "4rem",
-          color: hasOrderIssue ? "#f59e0b" : "#10b981",
-          marginBottom: "1rem",
-        }}
-      >
+    <div className="success-container">
+      <div className={`success-icon ${hasOrderIssue ? 'success-icon-warning' : 'success-icon-green'}`}>
         {hasOrderIssue ? "⚠️" : "✅"}
       </div>
 
-      <h1
-        style={{
-          color: hasOrderIssue ? "#f59e0b" : "#10b981",
-          marginBottom: "1rem",
-          fontSize: "2rem",
-        }}
-      >
+      <h1 className={`success-title ${hasOrderIssue ? 'success-title-warning' : 'success-title-green'}`}>
         {hasOrderIssue ? "Payment Received!" : "Order Confirmed!"}
       </h1>
 
-      <p
-        style={{
-          color: "#6b7280",
-          fontSize: "1.1rem",
-          marginBottom: "2rem",
-        }}
-      >
+      <p className="success-subtitle">
         {hasOrderIssue
           ? "Your payment was successful, but we're still processing your order details."
           : "Thank you for your purchase from Queen Bee Candles!"}
       </p>
 
-      <div
-        style={{
-          backgroundColor: hasOrderIssue ? "#fffbeb" : "#f0fdf4",
-          border: `1px solid ${hasOrderIssue ? "#fed7aa" : "#bbf7d0"}`,
-          borderRadius: "0.5rem",
-          padding: "1.5rem",
-          marginBottom: "2rem",
-          textAlign: "left",
-        }}
-      >
-        <h3
-          style={{
-            margin: "0 0 1rem 0",
-            color: hasOrderIssue ? "#92400e" : "#065f46",
-            fontSize: "1.2rem",
-          }}
-        >
+      <div className={`order-details-card ${hasOrderIssue ? 'order-details-warning' : 'order-details-green'}`}>
+        <h3 className={`order-details-title ${hasOrderIssue ? 'order-details-title-warning' : 'order-details-title-green'}`}>
           {hasOrderIssue ? "Payment Details" : "Order Details"}
         </h3>
 
-        <div style={{ display: "grid", gap: "0.5rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "#6b7280" }}>Order ID:</span>
-            <span style={{ fontWeight: "bold" }}>{paymentData.orderId}</span>
+        <div className="order-details-grid">
+          <div className="order-details-row">
+            <span className="order-details-label">Order ID:</span>
+            <span className="order-details-value">{paymentData.orderId}</span>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "#6b7280" }}>Payment ID:</span>
-            <span style={{ fontWeight: "bold", fontSize: "0.9rem" }}>
+          <div className="order-details-row">
+            <span className="order-details-label">Payment ID:</span>
+            <span className="order-details-value-small">
               {paymentData.paymentIntentId}
             </span>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "#6b7280" }}>Amount:</span>
-            <span style={{ fontWeight: "bold" }}>
+          <div className="order-details-row">
+            <span className="order-details-label">Amount:</span>
+            <span className="order-details-value">
               {formatAmount(paymentData.amount * 100)}
             </span>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "#6b7280" }}>Email:</span>
+          <div className="order-details-row">
+            <span className="order-details-label">Email:</span>
             <span>{paymentData.customerEmail}</span>
           </div>
 
           {paymentData.itemCount && (
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#6b7280" }}>Items:</span>
+            <div className="order-details-row">
+              <span className="order-details-label">Items:</span>
               <span>{paymentData.itemCount}</span>
             </div>
           )}
 
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "#6b7280" }}>Status:</span>
-            <span
-              style={{
-                fontWeight: "bold",
-                color: hasOrderIssue ? "#f59e0b" : "#10b981",
-              }}
-            >
+          <div className="order-details-row">
+            <span className="order-details-label">Status:</span>
+            <span className={hasOrderIssue ? 'order-details-status-warning' : 'order-details-status-green'}>
               {hasOrderIssue ? "Processing" : "Confirmed"}
             </span>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "#6b7280" }}>Date:</span>
+          <div className="order-details-row">
+            <span className="order-details-label">Date:</span>
             <span>{new Date(paymentData.timestamp).toLocaleDateString()}</span>
           </div>
         </div>
       </div>
 
       {hasOrderIssue && (
-        <div
-          style={{
-            backgroundColor: "#fef3c7",
-            border: "1px solid #fde68a",
-            borderRadius: "0.5rem",
-            padding: "1rem",
-            marginBottom: "2rem",
-            textAlign: "left",
-          }}
-        >
-          <h4 style={{ margin: "0 0 0.5rem 0", color: "#92400e" }}>
+        <div className="next-steps-card next-steps-warning">
+          <h4 className="next-steps-title next-steps-title-warning">
             What happens next?
           </h4>
-          <p style={{ margin: "0", color: "#78350f", fontSize: "0.9rem" }}>
+          <p className="next-steps-text next-steps-text-warning">
             Your payment was successful and we&apos;ll process your order
             shortly. If you don&apos;t receive a confirmation email within 24
             hours, please contact us with your Payment ID:{" "}
@@ -596,27 +527,11 @@ const PaymentSuccess = () => {
       )}
 
       {!hasOrderIssue && (
-        <div
-          style={{
-            backgroundColor: "#ecfdf5",
-            border: "1px solid #bbf7d0",
-            borderRadius: "0.5rem",
-            padding: "1rem",
-            marginBottom: "2rem",
-            textAlign: "left",
-          }}
-        >
-          <h4 style={{ margin: "0 0 0.5rem 0", color: "#065f46" }}>
+        <div className="next-steps-card next-steps-success">
+          <h4 className="next-steps-title next-steps-title-success">
             What happens next?
           </h4>
-          <ul
-            style={{
-              margin: "0",
-              paddingLeft: "1.2rem",
-              color: "#047857",
-              fontSize: "0.9rem",
-            }}
-          >
+          <ul className="next-steps-list next-steps-list-success">
             <li>You&apos;ll receive a confirmation email shortly</li>
             <li>We&apos;ll prepare your handcrafted candles with care</li>
             <li>Your order will be shipped within 2-3 business days</li>
@@ -625,50 +540,24 @@ const PaymentSuccess = () => {
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+      <div className="action-buttons">
         <Link
           to="/"
-          style={{
-            display: "inline-block",
-            backgroundColor: "#4f46e5",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "0.375rem",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
+          className="action-button action-button-primary"
         >
           Continue Shopping
         </Link>
 
         <a
           href={`mailto:support@queenbeecandles.co.nz?subject=Order Inquiry - ${paymentData.orderId}&body=Hi, I have a question about my order ${paymentData.orderId} (Payment ID: ${paymentData.paymentIntentId})`}
-          style={{
-            display: "inline-block",
-            backgroundColor: "#6b7280",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "0.375rem",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
+          className="action-button action-button-secondary"
         >
           Contact Support
         </a>
       </div>
 
-      <div
-        style={{
-          marginTop: "2rem",
-          padding: "1rem",
-          backgroundColor: "#f9fafb",
-          border: "1px solid #e5e7eb",
-          borderRadius: "0.5rem",
-          fontSize: "0.875rem",
-          color: "#6b7280",
-        }}
-      >
-        <p style={{ margin: "0" }}>
+      <div className="contact-info">
+        <p className="contact-info-text">
           <strong>Need help?</strong> Contact us at
           support@queenbeecandles.co.nz or reference your Order ID:{" "}
           <strong>{paymentData.orderId}</strong>
