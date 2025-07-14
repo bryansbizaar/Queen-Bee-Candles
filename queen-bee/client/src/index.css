@@ -936,3 +936,371 @@ body {
 .contact-info-text {
   margin: 0;
 }
+
+/* Cart Styles */
+.cart-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.cart-title {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 2rem;
+}
+
+.cart-empty-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+.cart-item-image {
+  width: 80px;
+}
+
+.cart-item-img {
+  width: 100%;
+  border-radius: 0.25rem;
+}
+
+.cart-item-info {
+  flex: 1;
+}
+
+.cart-item-title {
+  margin: 0 0 0.5rem 0;
+}
+
+.cart-item-price {
+  margin: 0;
+  color: #4b5563;
+}
+
+.cart-item-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cart-quantity-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.cart-remove-btn {
+  padding: 0.25rem 0.5rem;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  color: #4b5563;
+}
+
+.cart-item-total {
+  min-width: 80px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.cart-checkout-section {
+  border-top: 2px solid #e5e7eb;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cart-total {
+  display: flex;
+  gap: 2rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  justify-content: flex-end;
+}
+
+.cart-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cart-form-label {
+  font-weight: bold;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.cart-email-input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  outline: none;
+  background-color: white;
+}
+
+.cart-email-input.error {
+  border-color: #dc2626;
+}
+
+.cart-error-text {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.cart-payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cart-payment-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  background-color: white;
+}
+
+.cart-payment-option.selected {
+  background-color: #eff6ff;
+}
+
+.cart-payment-option.disabled {
+  opacity: 0.6;
+}
+
+.cart-payment-option input {
+  margin: 0;
+}
+
+.cart-error-message {
+  color: #dc2626;
+  background-color: #fef2f2;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  border: 1px solid #fecaca;
+  font-size: 0.9rem;
+}
+
+.cart-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cart-continue-shopping {
+  color: #6b7280;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  font-weight: bold;
+}
+
+.cart-proceed-btn {
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cart-proceed-btn.active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.cart-proceed-btn.disabled {
+  background-color: #9ca3af;
+  color: white;
+  cursor: not-allowed;
+}
+
+.cart-back-btn {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Loading Spinner Styles */
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  width: 100%;
+  background-color: #fff;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-spinner-text {
+  margin-left: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Payment Failure Styles */
+.payment-failure-container {
+  text-align: center;
+  padding: 3rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.payment-failure-icon {
+  font-size: 4rem;
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.payment-failure-title {
+  color: #dc2626;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.payment-failure-subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.payment-failure-error-card {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.payment-failure-error-title {
+  margin: 0 0 1rem 0;
+  color: #991b1b;
+  font-size: 1.1rem;
+}
+
+.payment-failure-error-text {
+  color: #7f1d1d;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.payment-failure-reasons-card {
+  background-color: #fffbeb;
+  border: 1px solid #fed7aa;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.payment-failure-reasons-title {
+  margin: 0 0 0.5rem 0;
+  color: #92400e;
+  font-size: 1rem;
+}
+
+.payment-failure-reasons-list {
+  color: #b45309;
+  margin: 0;
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.payment-failure-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.payment-failure-retry-btn {
+  background-color: #4f46e5;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.payment-failure-shop-link {
+  background-color: #6b7280;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.payment-failure-help-card {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.payment-failure-help-text {
+  color: #6b7280;
+  margin: 0;
+  font-size: 0.9rem;
+}

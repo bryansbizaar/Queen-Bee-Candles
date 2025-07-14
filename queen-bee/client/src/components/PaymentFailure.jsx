@@ -24,102 +24,34 @@ const PaymentFailure = () => {
   };
 
   return (
-    <div
-      style={{
-        textAlign: "center",
-        padding: "3rem",
-        maxWidth: "600px",
-        margin: "0 auto",
-      }}
-    >
-      <div
-        style={{
-          fontSize: "4rem",
-          color: "#dc2626",
-          marginBottom: "1rem",
-        }}
-      >
+    <div className="payment-failure-container">
+      <div className="payment-failure-icon">
         ❌
       </div>
 
-      <h1
-        style={{
-          color: "#dc2626",
-          marginBottom: "1rem",
-          fontSize: "2rem",
-        }}
-      >
+      <h1 className="payment-failure-title">
         Payment Failed
       </h1>
 
-      <p
-        style={{
-          color: "#6b7280",
-          fontSize: "1.1rem",
-          marginBottom: "2rem",
-        }}
-      >
+      <p className="payment-failure-subtitle">
         We&apos;re sorry, but your payment could not be processed.
       </p>
 
-      <div
-        style={{
-          backgroundColor: "#fef2f2",
-          border: "1px solid #fecaca",
-          borderRadius: "0.5rem",
-          padding: "1.5rem",
-          marginBottom: "2rem",
-          textAlign: "left",
-        }}
-      >
-        <h3
-          style={{
-            margin: "0 0 1rem 0",
-            color: "#991b1b",
-            fontSize: "1.1rem",
-          }}
-        >
+      <div className="payment-failure-error-card">
+        <h3 className="payment-failure-error-title">
           What went wrong?
         </h3>
 
-        <p
-          style={{
-            color: "#7f1d1d",
-            margin: "0",
-            fontSize: "0.95rem",
-          }}
-        >
+        <p className="payment-failure-error-text">
           {errorMessage}
         </p>
       </div>
 
-      <div
-        style={{
-          backgroundColor: "#fffbeb",
-          border: "1px solid #fed7aa",
-          borderRadius: "0.5rem",
-          padding: "1rem",
-          marginBottom: "2rem",
-        }}
-      >
-        <h4
-          style={{
-            margin: "0 0 0.5rem 0",
-            color: "#92400e",
-            fontSize: "1rem",
-          }}
-        >
+      <div className="payment-failure-reasons-card">
+        <h4 className="payment-failure-reasons-title">
           Common reasons for payment failure:
         </h4>
-        <ul
-          style={{
-            color: "#b45309",
-            margin: "0",
-            paddingLeft: "1.5rem",
-            fontSize: "0.9rem",
-            textAlign: "left",
-          }}
-        >
+        <ul className="payment-failure-reasons-list">
           <li>Insufficient funds</li>
           <li>Incorrect card details</li>
           <li>Card expired or blocked</li>
@@ -128,60 +60,24 @@ const PaymentFailure = () => {
         </ul>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          justifyContent: "center",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="payment-failure-actions">
         <button
           onClick={handleRetry}
-          style={{
-            backgroundColor: "#4f46e5",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "0.375rem",
-            border: "none",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          className="payment-failure-retry-btn"
         >
           Try Again
         </button>
 
         <Link
           to="/"
-          style={{
-            backgroundColor: "#6b7280",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "0.375rem",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
+          className="payment-failure-shop-link"
         >
           Continue Shopping
         </Link>
       </div>
 
-      <div
-        style={{
-          marginTop: "2rem",
-          padding: "1rem",
-          backgroundColor: "#f9fafb",
-          borderRadius: "0.5rem",
-          border: "1px solid #e5e7eb",
-        }}
-      >
-        <p
-          style={{
-            color: "#6b7280",
-            margin: "0",
-            fontSize: "0.9rem",
-          }}
-        >
+      <div className="payment-failure-help-card">
+        <p className="payment-failure-help-text">
           💡 <strong>Need help?</strong> Contact our support team if you
           continue to experience issues.
         </p>

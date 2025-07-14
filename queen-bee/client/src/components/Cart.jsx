@@ -109,17 +109,12 @@ const Cart = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div style={{ textAlign: "center", padding: "2rem" }}>
+      <div className="cart-empty">
         <h2>Your cart is empty</h2>
         <p>Looks like you haven&apos;t added anything to your cart yet.</p>
         <Link
           to="/"
-          style={{
-            display: "inline-block",
-            marginTop: "1rem",
-            color: "#4f46e5",
-            textDecoration: "none",
-          }}
+          className="cart-empty-link"
         >
           Continue Shopping
         </Link>
@@ -130,20 +125,10 @@ const Cart = () => {
   // Show payment step
   if (step === "payment" && clientSecret) {
     return (
-      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "1rem" }}>
+      <div className="cart-container">
         <button
           onClick={handleBackToReview}
-          style={{
-            backgroundColor: "#f3f4f6",
-            border: "1px solid #d1d5db",
-            padding: "0.5rem 1rem",
-            borderRadius: "0.25rem",
-            cursor: "pointer",
-            marginBottom: "1rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
+          className="cart-back-btn"
         >
           ← Back to Cart Review
         </button>
@@ -160,88 +145,44 @@ const Cart = () => {
   }
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "1rem" }}>
-      <h2
-        style={{ borderBottom: "1px solid #e5e7eb", paddingBottom: "0.5rem" }}
-      >
+    <div className="cart-container">
+      <h2 className="cart-title">
         Your Cart
       </h2>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          marginBottom: "2rem",
-        }}
-      >
+      <div className="cart-items">
         {cartItems.map((item) => (
           <div
             key={item.id}
-            style={{
-              display: "flex",
-              gap: "1rem",
-              alignItems: "center",
-              padding: "1rem",
-              border: "1px solid #e5e7eb",
-              borderRadius: "0.5rem",
-            }}
+            className="cart-item"
           >
-            <div style={{ width: "80px" }}>
+            <div className="cart-item-image">
               <img
                 src={`http://localhost:8080/images/${item.image}`}
                 alt={item.title}
-                style={{ width: "100%", borderRadius: "0.25rem" }}
+                className="cart-item-img"
               />
             </div>
 
-            <div style={{ flex: "1" }}>
-              <h3 style={{ margin: "0 0 0.5rem 0" }}>{item.title}</h3>
-              <p style={{ margin: "0", color: "#4b5563" }}>
+            <div className="cart-item-info">
+              <h3 className="cart-item-title">{item.title}</h3>
+              <p className="cart-item-price">
                 {formatAmount(item.price)}
               </p>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-              >
+            <div className="cart-item-controls">
+              <div className="cart-item-quantity">
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                  style={{
-                    width: "24px",
-                    height: "24px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#f3f4f6",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.25rem",
-                    cursor: "pointer",
-                  }}
+                  className="cart-quantity-btn"
                 >
                   -
                 </button>
                 <span>{item.quantity}</span>
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  style={{
-                    width: "24px",
-                    height: "24px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#f3f4f6",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.25rem",
-                    cursor: "pointer",
-                  }}
+                  className="cart-quantity-btn"
                 >
                   +
                 </button>
@@ -249,65 +190,30 @@ const Cart = () => {
 
               <button
                 onClick={() => removeFromCart(item.id)}
-                style={{
-                  padding: "0.25rem 0.5rem",
-                  backgroundColor: "#f3f4f6",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.25rem",
-                  cursor: "pointer",
-                  color: "#4b5563",
-                }}
+                className="cart-remove-btn"
               >
                 Remove
               </button>
             </div>
 
-            <div
-              style={{
-                minWidth: "80px",
-                textAlign: "right",
-                fontWeight: "bold",
-              }}
-            >
+            <div className="cart-item-total">
               {formatAmount(item.price * item.quantity)}
             </div>
           </div>
         ))}
       </div>
 
-      <div
-        style={{
-          borderTop: "2px solid #e5e7eb",
-          paddingTop: "1rem",
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: "2rem",
-            fontSize: "1.25rem",
-            fontWeight: "bold",
-            justifyContent: "flex-end",
-          }}
-        >
+      <div className="cart-checkout-section">
+        <div className="cart-total">
           <span>Total:</span>
           <span>{formatAmount(getCartTotal())}</span>
         </div>
 
         {/* Customer Email Input */}
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
-        >
+        <div className="cart-form-group">
           <label
             htmlFor="customerEmail"
-            style={{
-              fontWeight: "bold",
-              color: "#374151",
-              fontSize: "0.95rem",
-            }}
+            className="cart-form-label"
           >
             Email Address *
           </label>
@@ -317,51 +223,24 @@ const Cart = () => {
             value={customerEmail}
             onChange={handleEmailChange}
             placeholder="Enter your email address"
-            style={{
-              padding: "0.75rem",
-              border: emailError ? "1px solid #dc2626" : "1px solid #d1d5db",
-              borderRadius: "0.25rem",
-              fontSize: "1rem",
-              outline: "none",
-              backgroundColor: "white",
-            }}
+            className={`cart-email-input ${emailError ? 'error' : ''}`}
             onFocus={() => setEmailError("")}
           />
           {emailError && (
-            <span style={{ color: "#dc2626", fontSize: "0.875rem" }}>
+            <span className="cart-error-text">
               {emailError}
             </span>
           )}
         </div>
 
         {/* Payment Method Selection */}
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
-        >
-          <label
-            style={{
-              fontWeight: "bold",
-              color: "#374151",
-              fontSize: "0.95rem",
-            }}
-          >
+        <div className="cart-form-group">
+          <label className="cart-form-label">
             Payment Method *
           </label>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
-          >
+          <div className="cart-payment-methods">
             <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                cursor: "pointer",
-                padding: "0.5rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.25rem",
-                backgroundColor:
-                  paymentMethod === "stripe" ? "#eff6ff" : "white",
-              }}
+              className={`cart-payment-option ${paymentMethod === "stripe" ? 'selected' : ''}`}
             >
               <input
                 type="radio"
@@ -369,23 +248,11 @@ const Cart = () => {
                 value="stripe"
                 checked={paymentMethod === "stripe"}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                style={{ margin: 0 }}
               />
               <span>💳 Card Payment (Stripe)</span>
             </label>
             <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                cursor: "pointer",
-                padding: "0.5rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.25rem",
-                backgroundColor:
-                  paymentMethod === "account2account" ? "#eff6ff" : "white",
-                opacity: 0.6,
-              }}
+              className={`cart-payment-option ${paymentMethod === "account2account" ? 'selected' : ''} disabled`}
             >
               <input
                 type="radio"
@@ -393,7 +260,6 @@ const Cart = () => {
                 value="account2account"
                 checked={paymentMethod === "account2account"}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                style={{ margin: 0 }}
                 disabled
               />
               <span>🏦 Account2Account (Coming Soon)</span>
@@ -402,33 +268,15 @@ const Cart = () => {
         </div>
 
         {error && (
-          <div
-            style={{
-              color: "#dc2626",
-              backgroundColor: "#fef2f2",
-              padding: "0.75rem",
-              borderRadius: "0.25rem",
-              border: "1px solid #fecaca",
-              fontSize: "0.9rem",
-            }}
-          >
+          <div className="cart-error-message">
             {error}
           </div>
         )}
 
-        <div
-          style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}
-        >
+        <div className="cart-actions">
           <Link
             to="/"
-            style={{
-              color: "#6b7280",
-              textDecoration: "none",
-              padding: "0.75rem 1.5rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "0.25rem",
-              fontWeight: "bold",
-            }}
+            className="cart-continue-shopping"
           >
             Continue Shopping
           </Link>
@@ -436,21 +284,7 @@ const Cart = () => {
           <button
             onClick={handleProceedToPayment}
             disabled={loading || !customerEmail || !paymentMethod}
-            style={{
-              backgroundColor:
-                loading || !customerEmail || !paymentMethod
-                  ? "#9ca3af"
-                  : "#4f46e5",
-              color: "white",
-              border: "none",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "0.25rem",
-              cursor:
-                loading || !customerEmail || !paymentMethod
-                  ? "not-allowed"
-                  : "pointer",
-              fontWeight: "bold",
-            }}
+            className={`cart-proceed-btn ${loading || !customerEmail || !paymentMethod ? 'disabled' : 'active'}`}
           >
             {loading ? "Processing..." : "Proceed to Payment"}
           </button>
