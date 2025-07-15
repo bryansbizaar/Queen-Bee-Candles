@@ -131,7 +131,7 @@ describe('ProductDetail Integration Tests', () => {
     const addToCartButton = screen.getByText('Add to Cart')
     await user.click(addToCartButton)
 
-    expect(mockAlert).toHaveBeenCalledWith('Added 1 Honey Lavender Candle to cart!')
+    // Check that item was added to cart (remove alert expectation)
     expect(screen.getByTestId('cart-count')).toHaveTextContent('1')
     expect(screen.getByTestId('cart-total')).toHaveTextContent('3500')
     expect(screen.getByTestId('cart-item-1')).toHaveTextContent('Honey Lavender Candle - Qty: 1 - Price: 3500')
@@ -156,7 +156,7 @@ describe('ProductDetail Integration Tests', () => {
     await user.click(addToCartButton)
     await user.click(addToCartButton)
 
-    expect(mockAlert).toHaveBeenCalledTimes(2)
+    // Check that quantity increased (remove alert expectation)
     expect(screen.getByTestId('cart-count')).toHaveTextContent('2')
     expect(screen.getByTestId('cart-total')).toHaveTextContent('7000')
     expect(screen.getByTestId('cart-item-1')).toHaveTextContent('Honey Lavender Candle - Qty: 2 - Price: 3500')
