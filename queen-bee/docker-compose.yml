@@ -1,7 +1,4 @@
 # Queen Bee Candles - Docker Compose for Local Development
-# Simple PostgreSQL setup for database development
-
-version: "3.8"
 
 services:
   # PostgreSQL Database

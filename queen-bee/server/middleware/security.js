@@ -69,6 +69,11 @@ const limiters = {
 // Rate limiting middleware factory
 export const rateLimit = (type = "general", customMessage = null) => {
   return (req, res, next) => {
+    // Skip rate limiting in test environment
+    if (process.env.NODE_ENV === 'test' || process.env.DISABLE_RATE_LIMITING === 'true') {
+      return next();
+    }
+
     const limiter = limiters[type] || limiters.general;
     const identifier = req.ip || req.connection.remoteAddress || "unknown";
 
