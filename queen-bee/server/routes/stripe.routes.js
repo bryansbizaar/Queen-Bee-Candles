@@ -112,7 +112,9 @@ router.post(
         metadata: {
           orderId: orderId,
           customerEmail: customerEmail,
-          cartItems: JSON.stringify(cartItems),
+          cartItems: JSON.stringify(cartItems).length > 500 
+            ? JSON.stringify(cartItems.slice(0, 3)) + "..." 
+            : JSON.stringify(cartItems),
           itemCount: cartItems.length.toString(),
           totalItems: cartItems
             .reduce((sum, item) => sum + item.quantity, 0)

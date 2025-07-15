@@ -107,8 +107,7 @@ class OrderService {
         );
 
         if (updateResult.rows.length === 0) {
-          throw new Error();
-          // `Insufficient stock for product ID ${item.productId}. Please check availability.`
+          throw new Error(`Insufficient stock for product ID ${item.productId}. Please check availability.`);
         }
       }
 
@@ -175,12 +174,13 @@ class OrderService {
         o.status,
         o.created_at,
         o.updated_at,
+        c.email as customer_email,
         COUNT(oi.id) as item_count
       FROM orders o
       JOIN customers c ON o.customer_id = c.id
       LEFT JOIN order_items oi ON o.id = oi.order_id
       WHERE c.email = $1
-      GROUP BY o.id, o.order_id
+      GROUP BY o.id, o.order_id, c.email
       ORDER BY o.created_at DESC
     `;
 
@@ -246,7 +246,7 @@ class OrderService {
   // Check if payment intent already has an order
   static async getOrderByPaymentIntent(paymentIntentId) {
     const query = `
-      SELECT id, order_id, status, total_amount 
+      SELECT id, order_id, status, total_amount, payment_intent_id 
       FROM orders 
       WHERE payment_intent_id = $1
     `;
@@ -279,7 +279,17 @@ class OrderService {
     `;
 
     const result = await pool.query(query, params);
-    return result.rows[0];
+    const stats = result.rows[0];
+    
+    // Add orders_by_status object for compatibility with tests
+    stats.orders_by_status = {
+      completed: parseInt(stats.completed_orders) || 0,
+      pending: parseInt(stats.pending_orders) || 0,
+      paid: parseInt(stats.paid_orders) || 0,
+      cancelled: parseInt(stats.cancelled_orders) || 0
+    };
+    
+    return stats;
   }
 }
 

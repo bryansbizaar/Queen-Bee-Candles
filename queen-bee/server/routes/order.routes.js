@@ -44,6 +44,24 @@ router.post("/", async (req, res) => {
       });
     }
 
+    // Validate items structure FIRST - check for missing fields (but allow 0 values)
+    for (const item of items) {
+      if (!item.productId || item.quantity === undefined || item.quantity === null || item.price === undefined || item.price === null) {
+        return res.status(400).json({
+          error: "Each item must have productId, quantity, and price",
+        });
+      }
+    }
+
+    // THEN validate positive numbers
+    for (const item of items) {
+      if (item.quantity <= 0 || item.price <= 0) {
+        return res.status(400).json({
+          error: "Item quantity and price must be positive numbers",
+        });
+      }
+    }
+
     // Check if order already exists for this payment intent
     const existingOrder = await OrderService.getOrderByPaymentIntent(
       paymentIntentId
@@ -53,20 +71,6 @@ router.post("/", async (req, res) => {
         error: "Order already exists for this payment",
         orderId: existingOrder.id,
       });
-    }
-
-    // Validate items structure
-    for (const item of items) {
-      if (!item.productId || !item.quantity || !item.price) {
-        return res.status(400).json({
-          error: "Each item must have productId, quantity, and price",
-        });
-      }
-      if (item.quantity <= 0 || item.price <= 0) {
-        return res.status(400).json({
-          error: "Item quantity and price must be positive numbers",
-        });
-      }
     }
 
     // Create the order
@@ -118,18 +122,20 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET /api/orders/:id - Get order by ID
+// GET /api/orders/:id - Get order by ID (FIXED negative ID handling)
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id || isNaN(parseInt(id))) {
+    // Check for non-numeric or invalid IDs
+    const numericId = parseInt(id);
+    if (!id || isNaN(numericId) || numericId <= 0) {
       return res.status(400).json({
         error: "Valid order ID is required",
       });
     }
 
-    const order = await OrderService.getOrderById(parseInt(id));
+    const order = await OrderService.getOrderById(numericId);
 
     if (!order) {
       return res.status(404).json({

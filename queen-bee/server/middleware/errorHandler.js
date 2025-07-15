@@ -1,4 +1,4 @@
-import { AppError } from "./errors/CustomErrors.js";
+import { AppError, ValidationError } from "./errors/CustomErrors.js";
 
 // Enhanced error logging function
 const logError = (error, req) => {
@@ -75,6 +75,11 @@ const formatErrorResponse = (error, req) => {
     };
   }
 
+  // Ensure we have an error property for tests
+  if (!errorResponse.error) {
+    errorResponse.error = error.message;
+  }
+
   return errorResponse;
 };
 
@@ -90,6 +95,11 @@ const handleSpecificErrors = (error) => {
   }
 
   if (error.name === "ValidationError") {
+    // Handle our custom ValidationError
+    if (error instanceof ValidationError) {
+      return error;
+    }
+    // Handle MongoDB-style validation errors
     const errors = Object.values(error.errors).map((val) => val.message);
     return new AppError(`Invalid input data: ${errors.join(". ")}`, 400);
   }
