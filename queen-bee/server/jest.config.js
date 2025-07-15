@@ -9,6 +9,7 @@ export default {
   testTimeout: 30000,
   verbose: true,
   setupFiles: ['<rootDir>/tests/setup/env.js'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup/testSetup.js'],
   clearMocks: true,
   maxWorkers: 1,
   forceExit: true,

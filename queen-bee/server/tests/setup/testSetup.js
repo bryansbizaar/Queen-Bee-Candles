@@ -4,13 +4,16 @@
  * Provides basic test utilities without database operations
  */
 
-// Global test timeout
-jest.setTimeout(30000);
-
 // Setup before each test
 beforeEach(async () => {
-  // Reset any global state
-  jest.clearAllMocks();
+  // Reset any global state if needed
+  // jest.clearAllMocks() is handled by Jest config clearMocks: true
+});
+
+// Global cleanup after each test to prevent contamination
+afterEach(async () => {
+  // Add a small delay to let async operations complete
+  await new Promise(resolve => setTimeout(resolve, 100));
 });
 
 // Suppress console.log in tests unless explicitly needed
@@ -19,7 +22,7 @@ const originalConsoleError = console.error;
 
 beforeAll(() => {
   if (process.env.NODE_ENV === 'test' && !process.env.DEBUG_TESTS) {
-    console.log = jest.fn();
+    console.log = () => {}; // Silent console.log
     // Keep error logging for debugging
     console.error = originalConsoleError;
   }
