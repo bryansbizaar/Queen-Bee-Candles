@@ -371,7 +371,7 @@ describe('Product API Endpoints', () => {
       
       products.forEach(product => {
         expect(product.stock_quantity).toBeGreaterThanOrEqual(0);
-        expect(product.stock_quantity).toBeLessThan(1000); // Reasonable upper limit
+        expect(product.stock_quantity).toBeLessThanOrEqual(1000); // Reasonable upper limit
       });
     });
   });

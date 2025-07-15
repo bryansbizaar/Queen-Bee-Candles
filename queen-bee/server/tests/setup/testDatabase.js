@@ -181,10 +181,13 @@ export async function seedTestData() {
   try {
     await client.query('BEGIN');
 
-    // Clear existing data
+    // Clear existing data completely
     await client.query('TRUNCATE TABLE order_items, orders, customers, products RESTART IDENTITY CASCADE');
+    
+    // Ensure we start with a clean slate - delete any remaining products
+    await client.query('DELETE FROM products WHERE 1=1');
 
-    // Insert real product data
+    // Insert real product data with realistic stock quantities
     const products = [
       {
         title: 'Dragon',
@@ -192,7 +195,7 @@ export async function seedTestData() {
         price: 1500, // $15.00 in cents
         image: 'dragon.jpg',
         category: 'candles',
-        stock_quantity: 10
+        stock_quantity: 15 // Realistic stock for premium handcrafted item
       },
       {
         title: 'Corn Cob',
@@ -200,7 +203,7 @@ export async function seedTestData() {
         price: 1600, // $16.00 in cents
         image: 'corn-cob.jpg',
         category: 'candles',
-        stock_quantity: 15
+        stock_quantity: 12 // Realistic stock for unique item
       },
       {
         title: 'Bee and Flower',
@@ -208,7 +211,7 @@ export async function seedTestData() {
         price: 850, // $8.50 in cents
         image: 'bee-and-flower.jpg',
         category: 'candles',
-        stock_quantity: 20
+        stock_quantity: 18 // Good stock for popular theme
       },
       {
         title: 'Rose',
@@ -216,7 +219,7 @@ export async function seedTestData() {
         price: 800, // $8.00 in cents
         image: 'rose.jpg',
         category: 'candles',
-        stock_quantity: 25
+        stock_quantity: 20 // Highest stock for classic design
       }
     ];
 
@@ -252,10 +255,10 @@ export async function cleanupTestData() {
     
     // Reset product stock quantities but keep products
     await client.query(`UPDATE products SET stock_quantity = CASE 
-      WHEN title = 'Dragon' THEN 10
-      WHEN title = 'Corn Cob' THEN 15  
-      WHEN title = 'Bee and Flower' THEN 20
-      WHEN title = 'Rose' THEN 25
+      WHEN title = 'Dragon' THEN 15
+      WHEN title = 'Corn Cob' THEN 12  
+      WHEN title = 'Bee and Flower' THEN 18
+      WHEN title = 'Rose' THEN 20
       ELSE stock_quantity
     END`);
     
