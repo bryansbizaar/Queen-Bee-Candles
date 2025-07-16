@@ -1,8 +1,5 @@
-import '@testing-library/jest-dom'
-import { vi, beforeEach, afterEach } from 'vitest'
-
-// Mock fetch for tests
-globalThis.fetch = vi.fn()
+import '@testing-library/jest-dom';
+import { vi, beforeEach, afterEach } from 'vitest';
 
 // Mock localStorage
 const localStorageMock = {
@@ -10,8 +7,8 @@ const localStorageMock = {
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
-}
-globalThis.localStorage = localStorageMock
+};
+globalThis.localStorage = localStorageMock;
 
 // Mock sessionStorage
 const sessionStorageMock = {
@@ -19,31 +16,33 @@ const sessionStorageMock = {
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
-}
-globalThis.sessionStorage = sessionStorageMock
+};
+globalThis.sessionStorage = sessionStorageMock;
 
 // Mock Image for image loading tests
 globalThis.Image = class {
   constructor() {
     setTimeout(() => {
-      this.onload()
-    }, 100)
+      if (this.onload) {
+        this.onload();
+      }
+    }, 100);
   }
-}
+};
 
 // Mock IntersectionObserver for lazy loading tests
 globalThis.IntersectionObserver = vi.fn(() => ({
   observe: vi.fn(),
   disconnect: vi.fn(),
   unobserve: vi.fn(),
-}))
+}));
 
 // Mock ResizeObserver for responsive components
 globalThis.ResizeObserver = vi.fn(() => ({
   observe: vi.fn(),
   disconnect: vi.fn(),
   unobserve: vi.fn(),
-}))
+}));
 
 // Mock matchMedia for responsive design tests
 Object.defineProperty(window, 'matchMedia', {
@@ -58,35 +57,38 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-})
+});
 
 // Mock scrollTo for navigation tests
-globalThis.scrollTo = vi.fn()
+globalThis.scrollTo = vi.fn();
 
 // Mock console methods for cleaner test output
-console.error = vi.fn()
-console.warn = vi.fn()
+console.error = vi.fn();
+console.warn = vi.fn();
 
-// Clean up mocks between tests
+// Make navigator.onLine writable for tests
+Object.defineProperty(navigator, 'onLine', {
+  writable: true,
+  value: true,
+});
+
+// Set up mocks before each test
 beforeEach(() => {
-  vi.clearAllMocks()
-  
-  // Reset localStorage
-  localStorageMock.getItem.mockClear()
-  localStorageMock.setItem.mockClear()
-  localStorageMock.removeItem.mockClear()
-  localStorageMock.clear.mockClear()
-  
-  // Reset sessionStorage
-  sessionStorageMock.getItem.mockClear()
-  sessionStorageMock.setItem.mockClear()
-  sessionStorageMock.removeItem.mockClear()
-  sessionStorageMock.clear.mockClear()
-  
-  // Reset fetch
-  globalThis.fetch.mockClear()
-})
+  // Reset any previous mocks
+  vi.clearAllMocks();
 
+  // Mock the global fetch function
+  vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+    Promise.resolve({
+      ok: true,
+      status: 200,
+      json: async () => ({}),
+    })
+  );
+});
+
+// Clean up after each test
 afterEach(() => {
-  vi.resetAllMocks()
-})
+  // Restore all mocked functions to their original implementations
+  vi.restoreAllMocks();
+});

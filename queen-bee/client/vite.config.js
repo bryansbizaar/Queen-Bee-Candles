@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,7 +12,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.js'],
+    setupFiles: [
+      './src/test/setup.js',
+      './src/tests/setup/cartTestSetup.js'
+    ],
     include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
     exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
     coverage: {
@@ -21,6 +25,7 @@ export default defineConfig({
       exclude: [
         'node_modules/**',
         'src/test/**',
+        'src/tests/**',
         'src/**/*.test.{js,jsx}',
         'src/**/*.spec.{js,jsx}',
         'src/main.jsx',
@@ -35,6 +40,25 @@ export default defineConfig({
           branches: 85,
           functions: 85,
           lines: 85
+        },
+        // Specific thresholds for cart functionality
+        'src/context/CartContext.jsx': {
+          branches: 95,
+          functions: 95,
+          lines: 95,
+          statements: 95
+        },
+        'src/components/Cart.jsx': {
+          branches: 90,
+          functions: 90,
+          lines: 90,
+          statements: 90
+        },
+        'src/components/CartIcon.jsx': {
+          branches: 90,
+          functions: 90,
+          lines: 90,
+          statements: 90
         }
       }
     },
@@ -55,6 +79,14 @@ export default defineConfig({
     env: {
       VITE_API_URL: 'http://localhost:3001',
       VITE_STRIPE_PUBLIC_KEY: 'pk_test_mock_key_for_testing'
-    }
+    },
+    // Retry failed tests (useful for timing-sensitive cart operations)
+    retry: 2
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@tests': path.resolve(__dirname, './src/tests')
+    }
+  }
 })

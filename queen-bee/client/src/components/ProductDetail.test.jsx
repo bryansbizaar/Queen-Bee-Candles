@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
@@ -9,10 +9,6 @@ import useCart from '../context/useCart'
 // Mock window.alert
 const mockAlert = vi.fn()
 globalThis.alert = mockAlert
-
-// Mock fetch
-const mockFetch = vi.fn()
-globalThis.fetch = mockFetch
 
 // Mock useParams
 vi.mock('react-router-dom', async () => {
@@ -60,17 +56,8 @@ const mockProduct = {
 }
 
 describe('ProductDetail Integration Tests', () => {
-  beforeEach(() => {
-    mockAlert.mockClear()
-    mockFetch.mockClear()
-  })
-
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
-
   it('loads product successfully and displays details', async () => {
-    mockFetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockProduct
     })
@@ -90,7 +77,7 @@ describe('ProductDetail Integration Tests', () => {
   })
 
   it('handles API error gracefully', async () => {
-    mockFetch.mockRejectedValueOnce(new Error('Product not found'))
+    globalThis.fetch.mockRejectedValueOnce(new Error('Product not found'))
 
     render(<TestWrapper />)
 
@@ -102,7 +89,7 @@ describe('ProductDetail Integration Tests', () => {
   })
 
   it('handles 404 response', async () => {
-    mockFetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: false,
       status: 404
     })
@@ -117,7 +104,7 @@ describe('ProductDetail Integration Tests', () => {
   it('adds product to cart with default quantity', async () => {
     const user = userEvent.setup()
     
-    mockFetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockProduct
     })
@@ -140,7 +127,7 @@ describe('ProductDetail Integration Tests', () => {
   it('adds same product multiple times and increases quantity', async () => {
     const user = userEvent.setup()
     
-    mockFetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockProduct
     })
@@ -163,7 +150,7 @@ describe('ProductDetail Integration Tests', () => {
   })
 
   it('makes correct API call with product ID', async () => {
-    mockFetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockProduct
     })
@@ -171,12 +158,12 @@ describe('ProductDetail Integration Tests', () => {
     render(<TestWrapper />)
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:8080/api/products/1')
+      expect(globalThis.fetch).toHaveBeenCalledWith('http://localhost:8080/api/products/1')
     })
   })
 
   it('has proper form accessibility', async () => {
-    mockFetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockProduct
     })
@@ -198,7 +185,7 @@ describe('ProductDetail Integration Tests', () => {
   })
 
   it('displays proper heading hierarchy', async () => {
-    mockFetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockProduct
     })
@@ -212,7 +199,7 @@ describe('ProductDetail Integration Tests', () => {
   })
 
   it('handles network errors during fetch', async () => {
-    mockFetch.mockRejectedValueOnce(new Error('Network error'))
+    globalThis.fetch.mockRejectedValueOnce(new Error('Network error'))
 
     render(<TestWrapper />)
 
@@ -222,7 +209,7 @@ describe('ProductDetail Integration Tests', () => {
   })
 
   it('does not allow adding to cart when product fails to load', async () => {
-    mockFetch.mockRejectedValueOnce(new Error('Product not found'))
+    globalThis.fetch.mockRejectedValueOnce(new Error('Product not found'))
 
     render(<TestWrapper />)
 
