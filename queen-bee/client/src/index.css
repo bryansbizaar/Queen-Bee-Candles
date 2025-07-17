@@ -786,10 +786,6 @@ body {
   font-weight: bold;
 }
 
-.payment-form {
-  /* No specific styles needed for the form wrapper */
-}
-
 .card-input-container {
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;

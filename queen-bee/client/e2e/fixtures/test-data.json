@@ -1,0 +1,58 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Lavender Dreams",
+      "price": 24.99,
+      "description": "Handcrafted beeswax candle infused with pure lavender essential oil",
+      "image": "/images/lavender-dreams.jpg",
+      "category": "Essential Oils",
+      "stock": 15
+    },
+    {
+      "id": 2,
+      "name": "Vanilla Bean Bliss",
+      "price": 22.99,
+      "description": "Rich vanilla scented beeswax candle for cozy evenings",
+      "image": "/images/vanilla-bean-bliss.jpg",
+      "category": "Seasonal",
+      "stock": 8
+    },
+    {
+      "id": 3,
+      "name": "Eucalyptus Fresh",
+      "price": 26.99,
+      "description": "Invigorating eucalyptus beeswax candle for mental clarity",
+      "image": "/images/eucalyptus-fresh.jpg",
+      "category": "Essential Oils",
+      "stock": 12
+    }
+  ],
+  "customers": [
+    {
+      "name": "Test User",
+      "email": "test@example.com",
+      "address": {
+        "line1": "123 Test Street",
+        "city": "Auckland",
+        "postal_code": "1010",
+        "country": "NZ"
+      }
+    }
+  ],
+  "orders": [
+    {
+      "customerName": "Test User",
+      "customerEmail": "test@example.com",
+      "items": [
+        {
+          "productId": 1,
+          "quantity": 2,
+          "price": 24.99
+        }
+      ],
+      "total": 49.98,
+      "status": "completed"
+    }
+  ]
+}

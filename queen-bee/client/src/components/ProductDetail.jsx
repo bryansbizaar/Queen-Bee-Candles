@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ProductDetail = ({ productId }) => {
   const { id: paramId } = useParams();
@@ -52,7 +54,7 @@ const ProductDetail = ({ productId }) => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <div>Error: {error}</div>;
   if (!product) return <div>Product not found</div>;
 
@@ -92,6 +94,10 @@ const ProductDetail = ({ productId }) => {
       </div>
     </div>
   );
+};
+
+ProductDetail.propTypes = {
+  productId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default ProductDetail;
