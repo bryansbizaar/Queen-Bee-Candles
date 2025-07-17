@@ -2,10 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { 
   mockSuccessfulApiCall, 
   mockFailedApiCall, 
-  mockNetworkError,
   setupApiMocks
 } from '../setup/mockApi'
-import { TEST_ORDERS, TEST_CART_ITEMS, TEST_CUSTOMERS, TEST_API_RESPONSES } from '../setup/testData'
+import { TEST_ORDERS, TEST_CART_ITEMS } from '../setup/testData'
 
 // Mock the API base URL
 const API_BASE_URL = 'http://localhost:3001'

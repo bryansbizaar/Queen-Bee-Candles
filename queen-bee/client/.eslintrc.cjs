@@ -11,11 +11,24 @@ module.exports = {
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
+  globals: {
+    // Vitest globals
+    describe: 'readonly',
+    test: 'readonly',
+    expect: 'readonly',
+    beforeEach: 'readonly',
+    afterEach: 'readonly',
+    beforeAll: 'readonly',
+    afterAll: 'readonly',
+    vi: 'readonly',
+  },
   rules: {
     'react/jsx-no-target-blank': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
     ],
+    // Allow const variables that are used in async contexts
+    'no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
   },
 }

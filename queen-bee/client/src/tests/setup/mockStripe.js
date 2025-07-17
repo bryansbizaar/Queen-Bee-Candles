@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import React from 'react'
 
 // Mock Stripe Elements
 export const mockStripeElements = {
@@ -131,12 +132,12 @@ export const setupStripeMocks = () => {
   // Mock Stripe React hooks
   vi.mock('@stripe/react-stripe-js', () => ({
     Elements: ({ children }) => children,
-    CardElement: ({ onReady, onChange, onFocus, onBlur, ...props }) => {
+    CardElement: ({ onReady, onChange: _onChange, onFocus: _onFocus, onBlur: _onBlur, ...props }) => {
       React.useEffect(() => {
         if (onReady) onReady()
       }, [onReady])
       
-      return <div data-testid="card-element" {...props} />
+      return React.createElement('div', { 'data-testid': 'card-element', ...props })
     },
     useStripe: () => mockStripe,
     useElements: () => mockStripeElements,

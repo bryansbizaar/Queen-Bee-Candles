@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { 
   mockSuccessfulApiCall, 
   mockFailedApiCall, 
-  mockNetworkError,
   setupApiMocks
 } from '../setup/mockApi'
 import { TEST_CART_ITEMS, TEST_ORDERS } from '../setup/testData'

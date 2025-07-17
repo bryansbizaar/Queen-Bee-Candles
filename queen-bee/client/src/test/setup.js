@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import { vi, beforeEach, afterEach } from 'vitest';
+import { vi, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
+
 
 // Mock localStorage
 const localStorageMock = {
@@ -71,6 +72,24 @@ Object.defineProperty(navigator, 'onLine', {
   writable: true,
   value: true,
 });
+
+import { setupServer } from 'msw/node';
+import { handlers } from '../tests/setup/mockApiHandlers';
+
+const server = setupServer(...handlers);
+
+// Make the server instance available globally for tests that need to manipulate handlers
+global.server = server;
+
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+
+// Reset any request handlers that are declared as a part of our tests
+// (i.e. for testing one-off error cases).
+afterEach(() => server.resetHandlers());
+
+// Clean up after the tests are finished.
+afterAll(() => server.close());
 
 // Set up mocks before each test
 beforeEach(() => {

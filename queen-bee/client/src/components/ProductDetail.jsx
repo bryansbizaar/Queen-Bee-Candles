@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
 
-const ProductDetail = () => {
-  const { id } = useParams();
+const ProductDetail = ({ productId }) => {
+  const { id: paramId } = useParams();
+  const id = productId || paramId;
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
