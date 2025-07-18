@@ -22,13 +22,7 @@
     "test:integration": "vitest run src/tests/workflows/",
     "test:debug": "vitest run --reporter=verbose --no-coverage",
     "test:silent": "vitest run --silent",
-    "test:changed": "vitest run --changed",
-    "e2e": "playwright test",
-    "e2e:ui": "playwright test --ui",
-    "e2e:debug": "playwright test --debug",
-    "e2e:report": "playwright show-report",
-    "e2e:headed": "playwright test --headed",
-    "test:all": "npm test && npm run e2e"
+    "test:changed": "vitest run --changed"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",
@@ -40,9 +34,7 @@
     "react-router-dom": "^7.5.3"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.10.2",
     "@axe-core/react": "^4.10.2",
-    "@playwright/test": "^1.48.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
