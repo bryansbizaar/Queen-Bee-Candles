@@ -17,15 +17,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       
       - name: Install client dependencies
         working-directory: ./queen-bee/client
-        run: npm ci
+        run: npm install
         
       - name: Install server dependencies
         working-directory: ./queen-bee/server
-        run: npm ci
+        run: npm install
       
       - name: Run client tests
         working-directory: ./queen-bee/client
