@@ -118,3 +118,4 @@ server/
 - Product reviews
 - Payment integration
 # Testing CI
+# Testing manual CI
