@@ -1,4 +1,4 @@
-name: Simple CI
+name: Simple CI Debug
 
 on:
   push:
@@ -14,27 +14,61 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Debug - Show what was checked out
+        run: |
+          pwd
+          echo "=== Current directory contents ==="
+          ls -la
+          echo ""
+          echo "=== Checking for client directory ==="
+          if [ -d "client" ]; then
+            echo "✅ client directory found"
+            ls -la client/
+          else
+            echo "❌ client directory not found"
+          fi
+          echo ""
+          echo "=== Checking for server directory ==="
+          if [ -d "server" ]; then
+            echo "✅ server directory found"
+            ls -la server/
+          else
+            echo "❌ server directory not found"
+          fi
+          echo ""
+          echo "=== Git info ==="
+          git log --oneline -3
+          echo ""
+          echo "=== Workspace info ==="
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "Current working directory: $(pwd)"
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
       
       - name: Install client dependencies
+        if: always()
         working-directory: ./client
         run: npm ci
         
       - name: Install server dependencies
+        if: always()
         working-directory: ./server
         run: npm ci
       
       - name: Run client tests
+        if: always()
         working-directory: ./client
         run: npm run test:run
         
       - name: Run server tests
+        if: always()
         working-directory: ./server
         run: npm test
         
       - name: Build client
+        if: always()
         working-directory: ./client
         run: npm run build
