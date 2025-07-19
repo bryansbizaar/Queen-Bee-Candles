@@ -1,0 +1,10 @@
+name: Fresh Test
+on:
+  push:
+    branches: [ main ]
+jobs:
+  fresh-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print message
+        run: echo "Fresh workflow is working!"
