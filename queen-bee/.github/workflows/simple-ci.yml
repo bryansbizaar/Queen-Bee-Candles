@@ -1,10 +1,9 @@
 name: Simple CI
 
 on:
-  push:
-    branches: [main]
+  push:  # Run on all pushes
   pull_request:
-    branches: [main]
+    branches: [main]  # PRs only to main
 
 jobs:
   test:
