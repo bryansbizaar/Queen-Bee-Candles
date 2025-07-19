@@ -117,3 +117,4 @@ server/
 - Search functionality
 - Product reviews
 - Payment integration
+# Testing CI
