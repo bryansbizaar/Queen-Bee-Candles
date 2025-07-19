@@ -82,7 +82,7 @@ describe("ProductDetailEnhanced - Core Functionality", () => {
     
     render(<TestWrapper productId="1"></TestWrapper>);
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(screen.getByText("Loading products...")).toBeInTheDocument();
   });
 
   test("fetches and displays product information correctly", async () => {
@@ -95,7 +95,7 @@ describe("ProductDetailEnhanced - Core Functionality", () => {
 
     // Wait for loading to complete
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     // Verify product information is displayed
@@ -128,7 +128,7 @@ describe("ProductDetailEnhanced - Core Functionality", () => {
       expect(screen.getByText("Error: Product not found")).toBeInTheDocument();
     });
 
-    expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
   });
 
   test("handles network errors gracefully", async () => {
@@ -188,7 +188,7 @@ describe("ProductDetailEnhanced - Quantity Management", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     const quantityInput = screen.getByLabelText("Quantity:");
@@ -201,7 +201,7 @@ describe("ProductDetailEnhanced - Quantity Management", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     const quantityInput = screen.getByLabelText("Quantity:");
@@ -216,7 +216,7 @@ describe("ProductDetailEnhanced - Quantity Management", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     const quantityInput = screen.getByLabelText("Quantity:");
@@ -240,7 +240,7 @@ describe("ProductDetailEnhanced - Quantity Management", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     const quantityInput = screen.getByLabelText("Quantity:");
@@ -266,7 +266,7 @@ describe("ProductDetailEnhanced - Cart Integration", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     const addToCartButton = screen.getByRole("button", { name: "Add to Cart" });
@@ -281,7 +281,7 @@ describe("ProductDetailEnhanced - Cart Integration", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     const quantityInput = screen.getByLabelText("Quantity:");
@@ -305,7 +305,7 @@ describe("ProductDetailEnhanced - Cart Integration", () => {
 
     render(<TestWrapper productId="1"></TestWrapper>);
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(screen.getByText("Loading products...")).toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: "Add to Cart" })
     ).not.toBeInTheDocument();
@@ -342,7 +342,7 @@ describe("ProductDetailEnhanced - Accessibility", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     // Verify quantity input has proper label
@@ -364,7 +364,7 @@ describe("ProductDetailEnhanced - Accessibility", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     const quantityInput = screen.getByLabelText("Quantity:");
@@ -382,7 +382,7 @@ describe("ProductDetailEnhanced - Accessibility", () => {
     render(<TestWrapper productId="1"></TestWrapper>);
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      expect(screen.queryByText("Loading products...")).not.toBeInTheDocument();
     });
 
     // Verify heading structure
