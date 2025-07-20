@@ -11,6 +11,21 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: queen_bee_test
+          POSTGRES_USER: bryanowens
+          POSTGRES_PASSWORD: testpassword
+        options: >-
+          --health-cmd="pg_isready -U bryanowens -d queen_bee_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -27,6 +42,23 @@ jobs:
         working-directory: ./queen-bee/server
         run: npm install
       
+      - name: Set server test environment variables
+        run: |
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+          echo "DATABASE_HOST=localhost" >> $GITHUB_ENV
+          echo "DATABASE_PORT=5432" >> $GITHUB_ENV
+          echo "DATABASE_NAME=queen_bee_test" >> $GITHUB_ENV
+          echo "DATABASE_USER=bryanowens" >> $GITHUB_ENV
+          echo "DATABASE_PASSWORD=testpassword" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://bryanowens:testpassword@localhost:5432/queen_bee_test" >> $GITHUB_ENV
+      
+      - name: Run database migrations (if needed)
+        working-directory: ./queen-bee/server
+        run: |
+          # Add your migration command here if you have one
+          # Example: npm run migrate
+          echo "Add migration command here if needed"
+        
       - name: Run client tests
         working-directory: ./queen-bee/client
         run: npm run test:run
