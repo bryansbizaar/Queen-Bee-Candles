@@ -50,6 +50,7 @@ jobs:
           echo "DATABASE_NAME=queen_bee_test" >> $GITHUB_ENV
           echo "DATABASE_USER=bryanowens" >> $GITHUB_ENV
           echo "DATABASE_PASSWORD=testpassword" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://bryanowens:testpassword@localhost:5432/queen_bee_test" >> $GITHUB_ENV
       
       - name: Setup database schema (using proper SQL file)
         run: |
@@ -66,4 +67,3 @@ jobs:
       - name: Build client
         working-directory: ./client
         run: npm run build
-
