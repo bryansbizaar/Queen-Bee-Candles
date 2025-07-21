@@ -33,7 +33,7 @@ describe("ProductDetailEnhanced - Simple Verification", () => {
     render(<TestWrapper />);
 
     // Should show loading state initially
-    expect(screen.getByText("Loading products...")).toBeInTheDocument();
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 
   test("component imports are working correctly", () => {
