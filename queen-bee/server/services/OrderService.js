@@ -56,7 +56,7 @@ class OrderService {
   ) VALUES ($1, $2, $3, $4, $5, $6, $7) 
   RETURNING id, order_id, created_at`,
         [
-          `QBC-${Date.now()}`, // Generate order_id
+          `QBC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate unique order_id
           customerId,
           customerEmail,
           status,
