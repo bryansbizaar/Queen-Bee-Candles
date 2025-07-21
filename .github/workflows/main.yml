@@ -66,3 +66,4 @@ jobs:
       - name: Build client
         working-directory: ./client
         run: npm run build
+
