@@ -35,11 +35,11 @@ jobs:
           node-version: '20'
       
       - name: Install client dependencies
-        working-directory: ./client
+        working-directory: ./queen-bee/client
         run: npm install
         
       - name: Install server dependencies
-        working-directory: ./server
+        working-directory: ./queen-bee/server
         run: npm install
       
       - name: Set server test environment variables
@@ -50,19 +50,20 @@ jobs:
           echo "DATABASE_NAME=queen_bee_test" >> $GITHUB_ENV
           echo "DATABASE_USER=bryanowens" >> $GITHUB_ENV
           echo "DATABASE_PASSWORD=testpassword" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://bryanowens:testpassword@localhost:5432/queen_bee_test" >> $GITHUB_ENV
       
       - name: Setup database schema (using proper SQL file)
         run: |
           PGPASSWORD=testpassword psql -h localhost -U bryanowens -d queen_bee_test -f database/init.sql
         
       - name: Run client tests
-        working-directory: ./client
+        working-directory: ./queen-bee/client
         run: npm run test:run
         
       - name: Run server tests
-        working-directory: ./server
+        working-directory: ./queen-bee/server
         run: npm test
         
       - name: Build client
-        working-directory: ./client
+        working-directory: ./queen-bee/client
         run: npm run build
