@@ -16,13 +16,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Test database configuration - explicitly override environment variables
+// Test database configuration - use environment variables for CI
 const TEST_DB_CONFIG = {
-  user: 'bryanowens', // Force use of your working username
-  password: '', // No password needed for local development
-  host: 'localhost',
-  port: 5432,
-  database: 'queen_bee_test' // Force use of test database
+  user: process.env.DATABASE_USER || 'bryanowens',
+  password: process.env.DATABASE_PASSWORD || '', // Use env var for CI, empty for local
+  host: process.env.DATABASE_HOST || 'localhost',
+  port: process.env.DATABASE_PORT || 5432,
+  database: process.env.DATABASE_NAME || 'queen_bee_test'
 };
 
 // Database connection pools
