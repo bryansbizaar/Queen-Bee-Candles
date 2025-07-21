@@ -64,7 +64,7 @@ describe("ProductDetail Integration Tests", () => {
 
     render(<TestWrapper />);
 
-    expect(screen.getByText(/Loading/)).toBeInTheDocument();
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText("Honey Lavender Candle")).toBeInTheDocument();
