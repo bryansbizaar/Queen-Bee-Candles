@@ -43,15 +43,24 @@ const CardList = () => {
   }
 
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return (
+      <div className="error" role="alert" aria-live="assertive">
+        Error: {error}
+      </div>
+    );
   }
 
   if (products.length === 0) {
-    return <div className="no-products">No products found.</div>;
+    return (
+      <div className="no-products" role="status">
+        No products found.
+      </div>
+    );
   }
 
   return (
-    <div className="card-list">
+    <section className="card-list" role="region" aria-label="Product listings">
+      <h2 className="sr-only">Available Products</h2>
       {products.map((product) => (
         <CardWithLink
           key={product.id}
@@ -62,7 +71,7 @@ const CardList = () => {
           image={product.image}
         />
       ))}
-    </div>
+    </section>
   );
 };
 

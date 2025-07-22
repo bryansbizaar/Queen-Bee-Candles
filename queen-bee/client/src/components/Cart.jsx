@@ -402,7 +402,11 @@ const Cart = () => {
               </>
             )}
 
-            {error && <div className="cart-error-message">{error}</div>}
+            {error && (
+          <div className="cart-error-message" role="alert" aria-live="assertive">
+            {error}
+          </div>
+        )}
 
             <div className="cart-actions">
               <button
@@ -425,6 +429,10 @@ const Cart = () => {
   // Show cart review step (default) - KEEPING YOUR EXISTING STRUCTURE
   return (
     <div className="cart-container">
+      {/* Live region for cart updates */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only" id="cart-status">
+        {/* Screen readers will announce cart changes */}
+      </div>
       <h2 className="cart-title">Your Cart</h2>
 
       <div className="cart-items">
@@ -444,17 +452,20 @@ const Cart = () => {
             </div>
 
             <div className="cart-item-controls">
-              <div className="cart-item-quantity">
+              <div className="cart-item-quantity" role="group" aria-label={`Quantity for ${item.title}`}>
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   className="cart-quantity-btn"
+                  aria-label={`Decrease quantity of ${item.title}`}
+                  disabled={item.quantity <= 1}
                 >
                   -
                 </button>
-                <span>{item.quantity}</span>
+                <span aria-label={`Current quantity: ${item.quantity}`}>{item.quantity}</span>
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                   className="cart-quantity-btn"
+                  aria-label={`Increase quantity of ${item.title}`}
                 >
                   +
                 </button>
@@ -463,6 +474,7 @@ const Cart = () => {
               <button
                 onClick={() => removeFromCart(item.id)}
                 className="cart-remove-btn"
+                aria-label={`Remove ${item.title} from cart`}
               >
                 Remove
               </button>
@@ -494,8 +506,15 @@ const Cart = () => {
             placeholder="Enter your email address"
             className={`cart-email-input ${emailError ? "error" : ""}`}
             onFocus={() => setEmailError("")}
+            aria-required="true"
+            aria-invalid={emailError ? "true" : "false"}
+            aria-describedby={emailError ? "email-error" : undefined}
           />
-          {emailError && <span className="cart-error-text">{emailError}</span>}
+          {emailError && (
+            <span id="email-error" className="cart-error-text" role="alert">
+              {emailError}
+            </span>
+          )}
         </div>
 
         {/* Payment Method Selection */}
@@ -519,7 +538,11 @@ const Cart = () => {
           </div>
         </div>
 
-        {error && <div className="cart-error-message">{error}</div>}
+        {error && (
+          <div className="cart-error-message" role="alert" aria-live="assertive">
+            {error}
+          </div>
+        )}
 
         <div className="cart-actions">
           <Link to="/" className="cart-continue-shopping">

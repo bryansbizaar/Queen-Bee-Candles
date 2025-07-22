@@ -7,13 +7,15 @@ import Cart from "./components/Cart";
 import PaymentSuccess from "./components/PaymentSuccess";
 import PaymentFailure from "./components/PaymentFailure";
 
+
 function App() {
   return (
     <Router>
       <CartProvider>
         <div className="app">
+          <a href="#main-content" className="skip-link">Skip to main content</a>
           <Header />
-          <main className="main-content">
+          <main id="main-content" className="main-content" role="main">
             <Routes>
               <Route path="/" element={<CardList />} />
               <Route path="/product/:id" element={<ProductDetail />} />

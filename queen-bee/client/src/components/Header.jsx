@@ -11,11 +11,11 @@ const Header = () => {
   };
 
   return (
-    <header className="header">
+    <header className="header" role="banner">
       <div className="header-container">
         <div className="header-top">
           <div className="logo-wrapper">
-            <Link to="/">
+            <Link to="/" aria-label="Queen Bee Candles - Go to homepage">
               <img src={logo} alt="Queen Bee Candles Logo" className="logo" />
             </Link>
           </div>
@@ -33,15 +33,22 @@ const Header = () => {
           <button
             className={`menu-toggle ${menuOpen ? "active" : ""}`}
             onClick={toggleMenu}
-            aria-label="Toggle menu"
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={menuOpen}
+            aria-controls="main-navigation"
           >
-            <span className="menu-icon"></span>
+            <span className="menu-icon" aria-hidden="true"></span>
           </button>
         </div>
 
         <div className="nav-container">
-          <nav className={`main-nav ${menuOpen ? "is-open" : ""}`}>
-            <ul>
+          <nav 
+            className={`main-nav ${menuOpen ? "is-open" : ""}`}
+            role="navigation"
+            aria-label="Main navigation"
+            id="main-navigation"
+          >
+            <ul role="list">
               <li>
                 <Link to="/" onClick={() => setMenuOpen(false)}>
                   Home
