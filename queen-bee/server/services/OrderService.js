@@ -66,22 +66,11 @@ class OrderService {
         ]
       );
 
-      console.log(
-        "🔍 DEBUG: Received items data:",
-        JSON.stringify(items, null, 2)
-      );
-
       const orderId = orderResult.rows[0].id;
       const orderIdString = orderResult.rows[0].order_id;
 
       // 3. Create order items and update inventory
       for (const item of items) {
-        console.log("🔍 DEBUG: Processing item:", {
-          id: item.productId,
-          title: item.title,
-          price: item.price,
-          quantity: item.quantity,
-        });
         // Add order item
         await client.query(
           `INSERT INTO order_items (order_id, product_id, product_title, quantity, unit_price, total_price)

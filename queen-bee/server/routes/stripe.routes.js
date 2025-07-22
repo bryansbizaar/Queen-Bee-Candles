@@ -158,10 +158,7 @@ router.post(
         shippingAddress,
       } = req.body;
 
-      console.log(
-        "🔍 DEBUG: Received cartItems in create-order:",
-        JSON.stringify(cartItems, null, 2)
-      );
+
 
       // 1. Verify the payment intent was successful
       const paymentIntent = await stripe.paymentIntents.retrieve(

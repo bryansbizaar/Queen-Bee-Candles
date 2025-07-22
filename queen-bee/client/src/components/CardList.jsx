@@ -18,17 +18,13 @@ const CardList = () => {
         }
 
         const data = await response.json();
-        console.log("API Response:", data); // For debugging
 
         // Handle the new nested response structure
         if (data.success && data.data && data.data.products) {
-          console.log("Using nested structure - products:", data.data.products);
           setProducts(data.data.products);
         } else if (Array.isArray(data)) {
-          console.log("Using simple array structure:", data);
           setProducts(data);
         } else {
-          console.log("Unexpected response structure:", data);
           setProducts([]);
         }
       } catch (err) {

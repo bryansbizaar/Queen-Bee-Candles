@@ -54,7 +54,7 @@ jobs:
       
       - name: Setup database schema (using proper SQL file)
         run: |
-          PGPASSWORD=testpassword psql -h localhost -U bryanowens -d queen_bee_test -f database/init.sql
+          PGPASSWORD=testpassword psql -h localhost -U bryanowens -d queen_bee_test -f queen-bee/database/init.sql
         
       - name: Run client tests
         working-directory: ./queen-bee/client

@@ -93,10 +93,12 @@ const fetchWithRetry = async (url, options = {}, attempt = 1) => {
 
     // Retry logic for certain errors
     if (attempt < API_CONFIG.retryAttempts && shouldRetry(error)) {
-      console.warn(
-        `API request failed, retrying... (${attempt}/${API_CONFIG.retryAttempts})`,
-        error.message
-      );
+      if (import.meta.env?.MODE === "development") {
+        console.warn(
+          `API request failed, retrying... (${attempt}/${API_CONFIG.retryAttempts})`,
+          error.message
+        );
+      }
       await wait(API_CONFIG.retryDelay * attempt); // Exponential backoff
       return fetchWithRetry(url, options, attempt + 1);
     }
