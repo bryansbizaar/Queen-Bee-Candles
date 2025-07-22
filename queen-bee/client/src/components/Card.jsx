@@ -8,12 +8,20 @@ const Card = ({ title, price, description, image }) => {
     : `http://localhost:8080/images/${image}`;
 
   return (
-    <div className="card">
-      {image && <img className="card-img" src={imageUrl} alt={title} />}
-      <h2 className="card-title">{title}</h2>
-      <h3 className="card-price">{formatAmount(price)}</h3>
+    <article className="card">
+      {image && (
+        <img 
+          className="card-img" 
+          src={imageUrl} 
+          alt={`${title} candle product image`}
+        />
+      )}
+      <h3 className="card-title">{title}</h3>
+      <p className="card-price" aria-label={`Price: ${formatAmount(price)}`}>
+        {formatAmount(price)}
+      </p>
       <p className="card-text">{description}</p>
-    </div>
+    </article>
   );
 };
 

@@ -170,7 +170,7 @@ describe('Header Navigation and Cart Integration Tests', () => {
     
     render(<TestWrapper />)
 
-    const menuToggle = screen.getByRole('button', { name: 'Toggle menu' })
+    const menuToggle = screen.getByRole('button', { name: /navigation menu/i })
     const nav = screen.getByRole('navigation')
 
     expect(nav).not.toHaveClass('is-open')
@@ -187,7 +187,7 @@ describe('Header Navigation and Cart Integration Tests', () => {
     
     render(<TestWrapper />)
 
-    const menuToggle = screen.getByRole('button', { name: 'Toggle menu' })
+    const menuToggle = screen.getByRole('button', { name: /navigation menu/i })
     const nav = screen.getByRole('navigation')
     const homeLink = screen.getByRole('link', { name: 'Home' })
 
@@ -201,8 +201,8 @@ describe('Header Navigation and Cart Integration Tests', () => {
   it('has accessible menu toggle button', () => {
     render(<TestWrapper />)
 
-    const menuToggle = screen.getByRole('button', { name: 'Toggle menu' })
-    expect(menuToggle).toHaveAttribute('aria-label', 'Toggle menu')
+    const menuToggle = screen.getByRole('button', { name: /navigation menu/i })
+    expect(menuToggle).toHaveAttribute('aria-label', 'Open navigation menu')
   })
 
   it('has proper navigation structure', () => {
