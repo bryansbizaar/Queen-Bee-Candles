@@ -9,19 +9,19 @@ import Header from '../../components/Header';
 import CartIcon from '../../components/CartIcon';
 
 // Mock the cart context with realistic data
-const mockCartContext = {
+const mockCartWithItems = {
   cartItems: [
     { 
       id: 1, 
-      title: 'Test Candle', 
-      price: 25, 
+      title: 'Dragon', 
+      price: 1500, // $15.00 in cents
       quantity: 1, 
-      image: 'test.jpg' 
+      image: 'dragon.jpg' 
     }
   ],
   removeFromCart: vi.fn(),
   updateQuantity: vi.fn(),
-  getCartTotal: () => 25,
+  getCartTotal: () => 1500,
   getCartCount: () => 1,
   addToCart: vi.fn(),
   clearCart: vi.fn()
@@ -39,7 +39,7 @@ const emptyCartContext = {
 };
 
 // Helper to render components with custom cart context
-const renderWithCartContext = (component, cartContext = mockCartContext) => {
+const renderWithCartContext = (component, cartContext = mockCartWithItems) => {
   return render(
     <BrowserRouter>
       <CartContext.Provider value={cartContext}>
@@ -75,28 +75,15 @@ describe('Priority 1 Accessibility Improvements', () => {
 
   describe('Cart Component', () => {
     test('should have live region for announcements when cart has items', () => {
-      const { container } = renderWithCartContext(<Cart />, mockCartContext);
+      const { container } = renderWithCartContext(<Cart />, mockCartWithItems);
       
-      // Debug: let's see what's actually rendered
-      console.log('Rendered HTML:', container.innerHTML);
-      
-      // Check if we're actually seeing the cart items display
-      const cartTitle = screen.queryByText(/your cart/i);
-      console.log('Cart title found:', cartTitle);
-      
-      // Check for live region
+      // Check for live region - should exist when cart has items
       const liveRegion = container.querySelector('[aria-live="polite"]');
-      console.log('Live region found:', liveRegion);
-      
       expect(liveRegion).toBeInTheDocument();
     });
 
     test('should have proper form labels and error handling when cart has items', () => {
-      const { container } = renderWithCartContext(<Cart />, mockCartContext);
-      
-      // Debug output
-      console.log('Test cart context cartItems:', mockCartContext.cartItems);
-      console.log('Rendered HTML:', container.innerHTML);
+      renderWithCartContext(<Cart />, mockCartWithItems);
       
       // First verify we're not seeing empty cart
       const emptyMessage = screen.queryByText(/your cart is empty/i);
