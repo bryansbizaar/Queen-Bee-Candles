@@ -9,11 +9,20 @@ import {
   InternalServerError,
 } from "../middleware/errors/CustomErrors.js";
 import OrderService from "../services/OrderService.js";
+import { MockStripe } from "../tests/setup/mockStripe.js";
 
 dotenv.config();
 
 const router = express.Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// Initialize Stripe - use mock if in test mode without real keys
+let stripe;
+if (process.env.USE_STRIPE_MOCKS === 'true') {
+  stripe = new MockStripe();
+  console.log('🔧 Using Mock Stripe for testing');
+} else {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+}
 
 // Validation rule for payment intent ID
 const paymentIntentIdValidation = (req) => {

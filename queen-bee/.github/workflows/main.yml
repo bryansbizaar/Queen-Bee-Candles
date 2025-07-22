@@ -42,6 +42,20 @@ jobs:
         working-directory: ./queen-bee/server
         run: npm install
       
+      - name: Setup environment file for tests
+        working-directory: ./queen-bee/server
+        run: |
+          cp .env.ci .env
+          # If real Stripe keys are available, use them (otherwise keep mocks)
+          if [[ -n "${{ secrets.STRIPE_SECRET_KEY_TEST }}" ]]; then
+            echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY_TEST }}" >> .env
+            echo "STRIPE_PUBLISHABLE_KEY=${{ secrets.STRIPE_PUBLISHABLE_KEY_TEST }}" >> .env
+            echo "USE_STRIPE_MOCKS=false" >> .env
+            echo "🔑 Using real Stripe test keys"
+          else
+            echo "🔧 Using Stripe mocks (no real keys provided)"
+          fi
+      
       - name: Set server test environment variables
         run: |
           echo "NODE_ENV=test" >> $GITHUB_ENV

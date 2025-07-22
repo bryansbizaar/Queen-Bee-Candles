@@ -127,8 +127,16 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 // GET /api/products/:id - Get product by ID with related products
 export const getProductById = asyncHandler(async (req, res) => {
   try {
-    // ID validation is handled by middleware
+    // Validate product ID
     const productId = parseInt(req.params.id);
+    
+    if (isNaN(productId) || productId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid product ID. Product ID must be a positive integer.",
+        timestamp: new Date().toISOString(),
+      });
+    }
 
     const product = await ProductService.getProductById(productId);
 
@@ -365,6 +373,15 @@ export const healthCheck = asyncHandler(async (req, res) => {
 export const checkStock = asyncHandler(async (req, res) => {
   try {
     const productId = parseInt(req.params.id);
+    
+    if (isNaN(productId) || productId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid product ID. Product ID must be a positive integer.",
+        timestamp: new Date().toISOString(),
+      });
+    }
+    
     const requestedQuantity = parseInt(req.query.quantity) || 1;
 
     if (requestedQuantity < 1) {
@@ -416,6 +433,15 @@ export const checkStock = asyncHandler(async (req, res) => {
 export const updateStock = asyncHandler(async (req, res) => {
   try {
     const productId = parseInt(req.params.id);
+    
+    if (isNaN(productId) || productId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid product ID. Product ID must be a positive integer.",
+        timestamp: new Date().toISOString(),
+      });
+    }
+    
     const { quantity, reason = "manual_adjustment" } = req.body;
 
     // Validation
@@ -538,6 +564,15 @@ export const getLowStockProducts = asyncHandler(async (req, res) => {
 export const adjustStock = asyncHandler(async (req, res) => {
   try {
     const productId = parseInt(req.params.id);
+    
+    if (isNaN(productId) || productId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid product ID. Product ID must be a positive integer.",
+        timestamp: new Date().toISOString(),
+      });
+    }
+    
     const { adjustment, reason = "manual_adjustment", notes } = req.body;
 
     // Validation

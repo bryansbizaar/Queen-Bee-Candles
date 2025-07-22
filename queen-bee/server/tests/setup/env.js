@@ -16,9 +16,20 @@ if (process.env.NODE_ENV === 'test' || process.argv.some(arg => arg.includes('je
   process.env.DATABASE_USER = 'bryanowens';
   process.env.DATABASE_PASSWORD = 'testpassword';
 
-  // Test Stripe keys - USE YOUR OWN TEST KEYS
-  process.env.STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_STRIPE_SECRET_KEY_HERE';
-  process.env.STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY_HERE';
+  // Test Stripe keys - Use real keys if available, otherwise use test-safe values
+  const hasRealStripeKeys = process.env.STRIPE_SECRET_KEY && 
+    process.env.STRIPE_SECRET_KEY.startsWith('sk_test_') && 
+    process.env.STRIPE_SECRET_KEY.length > 30;
+  
+  if (!hasRealStripeKeys) {
+    // If no real keys, use values that won't call real Stripe API
+    process.env.STRIPE_SECRET_KEY = 'sk_test_mock_key_for_testing';
+    process.env.STRIPE_PUBLISHABLE_KEY = 'pk_test_mock_key_for_testing';
+    process.env.USE_STRIPE_MOCKS = 'true';
+    console.log('🔧 Using Stripe mocks for testing (no real keys provided)');
+  } else {
+    console.log('🔑 Using real Stripe test keys for integration testing');
+  }
 
   // Test-specific flags - REDUCE NOISE
   process.env.DISABLE_RATE_LIMITING = 'true';
