@@ -16,9 +16,9 @@ if (process.env.NODE_ENV === 'test' || process.argv.some(arg => arg.includes('je
   process.env.DATABASE_USER = 'bryanowens';
   process.env.DATABASE_PASSWORD = 'testpassword';
 
-  // Test Stripe keys
-  process.env.STRIPE_SECRET_KEY = 'sk_test_51KiUsHJeFn5NEp5heW6QNiC5NgNX4hEKigH8fpRoQlscBQmXkVIQDxjjf1UfP01wpfr5XXqIKa6m0Y0xWvBhIPxT00qMIUe49p';
-  process.env.STRIPE_PUBLISHABLE_KEY = 'pk_test_51KiUsHJeFn5NEp5hPErex1Pxw5SZMnlkBoSvS28FjvTeGNhrc8Xu5Hj4kP4GlYlEugzyhZiIja20EZFZuNXPbBl100A2oVoUN4';
+  // Test Stripe keys - USE YOUR OWN TEST KEYS
+  process.env.STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_STRIPE_SECRET_KEY_HERE';
+  process.env.STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY_HERE';
 
   // Test-specific flags - REDUCE NOISE
   process.env.DISABLE_RATE_LIMITING = 'true';
