@@ -1,14 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import CartIcon from "./CartIcon";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuOpen &&
+        navRef.current &&
+        menuButtonRef.current &&
+        !navRef.current.contains(event.target) &&
+        !menuButtonRef.current.contains(event.target)
+      ) {
+        closeMenu();
+      }
+    };
+
+    // Add event listener when menu is open
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    // Cleanup event listeners
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [menuOpen]);
 
   return (
     <header className="header" role="banner">
@@ -31,6 +64,7 @@ const Header = () => {
           </div>
 
           <button
+            ref={menuButtonRef}
             className={`menu-toggle ${menuOpen ? "active" : ""}`}
             onClick={toggleMenu}
             aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
@@ -43,6 +77,7 @@ const Header = () => {
 
         <div className="nav-container">
           <nav 
+            ref={navRef}
             className={`main-nav ${menuOpen ? "is-open" : ""}`}
             role="navigation"
             aria-label="Main navigation"
@@ -50,17 +85,17 @@ const Header = () => {
           >
             <ul role="list">
               <li>
-                <Link to="/" onClick={() => setMenuOpen(false)}>
+                <Link to="/" onClick={closeMenu}>
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" onClick={() => setMenuOpen(false)}>
+                <Link to="/about" onClick={closeMenu}>
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/contact" onClick={() => setMenuOpen(false)}>
+                <Link to="/contact" onClick={closeMenu}>
                   Contact
                 </Link>
               </li>
